@@ -108,16 +108,23 @@ patterns, private artifacts and local home paths. This is a heuristic check and
 must accompany review of staged content and intended visibility. It does not
 prove that arbitrary confidential data is absent.
 
-The GitHub Actions workflow runs structural validation and the offline suite on
-Linux, macOS and Windows, with Python 3.11, 3.12 and 3.13. Configuration alone is
-not evidence of a successful remote run. Actual CI results are recorded after
-publication. These OS runs exercise the framework, not native AI clients.
+The [completed nine-job CI run](https://github.com/Jpflorentino/development-agent-team/actions/runs/39105411048)
+passed on Linux, macOS and Windows with Python 3.11, 3.12 and 3.13, testing code
+commit `a335b4b237fa6d7deb9facdb68b36eeb3a25a768`. All jobs passed structural
+validation, the offline suite and the publication scanner. Each Linux/macOS job
+passed 69 tests. Each Windows job registered 69 tests: 68 passed and one symlink
+creation case was explicitly skipped because Windows privileges vary. No failures
+were ignored. These OS runs exercise the framework, not native AI clients.
 
 The first remote run passed all six Linux/macOS jobs and exposed two test-file
 encoding assumptions on Windows. Explicit UTF-8 fixture reads/writes replaced
 locale defaults, and Unicode roundtrip/ASCII-console regressions were added before
 the full matrix was repeated. Installer/memory filesystem scenarios passed in that
 first Windows run; test encoding failures were not treated as a successful suite.
+
+The final evidence-only documentation update was structurally validated and
+scanned locally; application code and tests are identical to that successful CI
+revision. No private host configuration or native raw transcripts were published.
 
 ## Remaining limitations
 

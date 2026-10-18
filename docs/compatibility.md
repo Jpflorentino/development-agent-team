@@ -41,7 +41,7 @@ Actual client versions, evidence and untested dimensions are recorded in the
 
 To promote a native capability, record the product and surface, version, OS, date, relevant configuration, actual invocation and observed evidence. Test discovery/loading, one read-only specialist invocation, a delegated result, context access, denied writes and parallel isolation where supported. Do not record private prompts, credentials or consumer source code in public test evidence. A skipped or unavailable runtime remains explicitly untested.
 
-The CLI uses portable Python 3.11+ and standard-library APIs. OS portability is an implementation objective, not proof of Windows and Linux execution; runs on those systems must be reported separately. Runtime tools may require installation, authentication or permissions not provided by the framework.
+The CLI uses Python 3.11+ and standard-library APIs. Its offline suite passed the nine-job Linux/macOS/Windows and Python 3.11/3.12/3.13 matrix; the [validation report](validation.md) records exact results and the Windows symlink skip. Native AI client tests were performed only on macOS. Runtime tools may require installation, authentication or permissions not provided by the framework.
 
 Read-only profiles have different technical limits. Claude Code profiles allow only `Read`, `Grep` and `Glob`; Copilot profiles allow `read` and `search`. Codex profiles disable shell, apps, plugins and permission requests, but inherit the host's remaining edit/MCP permissions. A read-only instruction alone is not a complete technical boundary: configure the host sandbox and tool permissions appropriately before independent review.
 

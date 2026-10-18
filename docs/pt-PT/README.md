@@ -54,3 +54,12 @@ python3 -m unittest discover -s tests -v
 ```
 
 Os testes estruturais, de instalação e de contratos não substituem testes nativos nas plataformas. A [compatibilidade](../compatibility.md) identifica o que falta verificar; os [dez exemplos](../../examples/README.md) mostram a coordenação em situações concretas. A documentação pública principal é inglesa. Consulte [contribuições](../contributing.md) e a [licença MIT](../../LICENSE).
+
+A [validação da versão 1.0.0](../validation.md) regista 69 testes locais aprovados
+e nove jobs de CI aprovados em Linux, macOS e Windows com Python 3.11–3.13.
+No Windows, um dos 69 testes fica explicitamente ignorado por depender de
+privilégios para criar symlinks. O Codex executou uma delegação real com definição
+canónica fornecida ao subagente; a seleção de perfis TOML pelo nome não ficou
+validada. O Claude carregou os dez perfis, mas a invocação ficou bloqueada por
+falta de autenticação. Copilot e a importação manual para ChatGPT não foram
+executados. Estas limitações fazem parte da entrega.
