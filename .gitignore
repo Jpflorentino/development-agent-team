@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.DS_Store
+dist/
+.ai-team/.dat/
+.ai-team/context.local.md
+.ai-team/context.md
+.env
+.env.*
+!.env.example

@@ -1,0 +1,103 @@
+{
+  "version": "1.0.0",
+  "agents": [
+    {
+      "id": "team-leader",
+      "name": "Team Leader",
+      "description": "Central coordinator that selects specialists, validates evidence, controls permissions and consolidates project memory.",
+      "read_only": false,
+      "dependencies": [],
+      "definition": "agents/team-leader.md"
+    },
+    {
+      "id": "software-architect",
+      "name": "Software Architect",
+      "description": "Evaluates system boundaries and structural tradeoffs while preserving the existing project by default.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/software-architect.md"
+    },
+    {
+      "id": "ui-ux-designer",
+      "name": "UI/UX Designer",
+      "description": "Designs accessible user flows, visual systems and implementable interface specifications.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/ui-ux-designer.md"
+    },
+    {
+      "id": "frontend-developer",
+      "name": "Frontend Developer",
+      "description": "Implements reliable, responsive and accessible user interfaces using the project\u2019s existing stack.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/frontend-developer.md"
+    },
+    {
+      "id": "backend-developer",
+      "name": "Backend Developer",
+      "description": "Implements service logic, APIs and integrations with explicit contracts and security boundaries.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/backend-developer.md"
+    },
+    {
+      "id": "database-engineer",
+      "name": "Database Engineer",
+      "description": "Designs schemas, migrations and queries with data integrity and operational safety.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/database-engineer.md"
+    },
+    {
+      "id": "qa-engineer",
+      "name": "QA/Test Engineer",
+      "description": "Validates acceptance criteria and regressions using honest, reproducible test evidence.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/qa-engineer.md"
+    },
+    {
+      "id": "security-engineer",
+      "name": "Security Engineer",
+      "description": "Independently assesses security risks and verifies mitigations within expressly authorized scope.",
+      "read_only": true,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/security-engineer.md"
+    },
+    {
+      "id": "devops-engineer",
+      "name": "DevOps Engineer",
+      "description": "Prepares CI/CD, infrastructure and authorized deployments with rollback and operational evidence.",
+      "read_only": false,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/devops-engineer.md"
+    },
+    {
+      "id": "code-review-engineer",
+      "name": "Code Review Engineer",
+      "description": "Read-only independent reviewer focused on consequential defects and maintainability risks.",
+      "read_only": true,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/code-review-engineer.md"
+    }
+  ]
+}
