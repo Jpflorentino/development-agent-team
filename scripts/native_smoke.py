@@ -89,7 +89,7 @@ def main():
     try:
         prompt = ROLE_PROMPT if args.dispatch == "role-envelope" else PROMPT
         process = subprocess.Popen(command, cwd=folder, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, text=True, start_new_session=os.name != "nt")
+                                   stderr=subprocess.PIPE, text=True, encoding="utf-8", start_new_session=os.name != "nt")
         try:
             stdout, stderr = process.communicate(prompt, timeout=args.timeout)
         except subprocess.TimeoutExpired:

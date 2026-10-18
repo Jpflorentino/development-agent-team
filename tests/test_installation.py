@@ -66,7 +66,7 @@ class InstallationTests(unittest.TestCase):
         for action in ("install", "update", "uninstall"):
             with self.assertRaises(Conflict):
                 self.install(action=action)
-            self.assertEqual(profile.read_text(), "user customization")
+            self.assertEqual(profile.read_text(encoding="utf-8"), "user customization")
             self.assertEqual((self.target / "AGENTS.md").read_bytes(), original)
 
     def test_existing_unowned_profile_is_not_adopted_or_overwritten(self):
@@ -75,20 +75,20 @@ class InstallationTests(unittest.TestCase):
         profile.write_text("unowned", encoding="utf-8")
         with self.assertRaises(Conflict):
             self.install()
-        self.assertEqual(profile.read_text(), "unowned")
+        self.assertEqual(profile.read_text(encoding="utf-8"), "unowned")
         self.assertFalse((self.target / "AGENTS.md").exists())
 
     def test_modified_managed_block_is_conflict(self):
         self.install()
         instructions = self.target / "AGENTS.md"
-        instructions.write_text(instructions.read_text().replace("# Development Agent Team", "# Customized"))
+        instructions.write_text(instructions.read_text(encoding="utf-8").replace("# Development Agent Team", "# Customized"), encoding="utf-8")
         with self.assertRaises(Conflict):
             self.install(action="update")
 
     def test_upgrade_replaces_managed_content_and_detects_version(self):
         self.install()
         state = self.target / state_path("codex", "project")
-        value = json.loads(state.read_text())
+        value = json.loads(state.read_text(encoding="utf-8"))
         value["version"] = "0.9.0"
         state.write_text(json.dumps(value))
         from dat.adapters import render
@@ -98,7 +98,7 @@ class InstallationTests(unittest.TestCase):
         with patch("dat.adapters.render", return_value=modified):
             result = self.install(action="update")
         self.assertEqual(result["previous_version"], "0.9.0")
-        self.assertIn("# upgraded", (self.target / path).read_text())
+        self.assertIn("# upgraded", (self.target / path).read_text(encoding="utf-8"))
 
     def test_platform_coexistence_and_selective_uninstall(self):
         self.install("codex")
@@ -112,17 +112,17 @@ class InstallationTests(unittest.TestCase):
 
     def test_private_and_sharing_options(self):
         self.install()
-        ignored = (self.target / ".gitignore").read_text()
+        ignored = (self.target / ".gitignore").read_text(encoding="utf-8")
         self.assertIn("/.codex/agents/dat-team-leader.toml", ignored)
-        self.assertIn("context.md", (self.target / ".ai-team/.gitignore").read_text())
+        self.assertIn("context.md", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
         self.install(action="update", share_agents=True, share_context=True)
-        ignored = (self.target / ".gitignore").read_text()
+        ignored = (self.target / ".gitignore").read_text(encoding="utf-8")
         self.assertNotIn("/.codex/agents/", ignored)
         self.assertNotIn("/.ai-team/context.md\n", ignored)
-        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text())
+        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
         self.assertIn("/.ai-team/context.local.md", ignored)
         self.install(action="update")
-        self.assertEqual((self.target / ".gitignore").read_text(), ignored)
+        self.assertEqual((self.target / ".gitignore").read_text(encoding="utf-8"), ignored)
 
     def test_uninstall_preserves_memory_and_unrelated_files(self):
         self.install()
@@ -131,7 +131,7 @@ class InstallationTests(unittest.TestCase):
         unrelated = self.target / "application.py"
         unrelated.write_text("print('existing')")
         self.install(action="uninstall")
-        self.assertEqual(context.read_text(), "approved decision")
+        self.assertEqual(context.read_text(encoding="utf-8"), "approved decision")
         self.assertTrue(unrelated.exists())
 
     def test_missing_update_and_global_chatgpt_fail_explicitly(self):
@@ -183,7 +183,7 @@ class InstallationTests(unittest.TestCase):
         from dat import memory
         memory.init(self.target, share_context=True)
         self.install(action="update")
-        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text())
+        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
 
     @unittest.skipIf(__import__("os").name == "nt", "Windows symlink creation can require privileges")
     def test_symlink_target_is_rejected(self):

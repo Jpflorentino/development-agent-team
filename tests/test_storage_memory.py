@@ -47,7 +47,7 @@ class StorageMemoryTests(unittest.TestCase):
         self.assertEqual((self.root / "existing").read_bytes(), b"after")
         recover(self.root)
         self.assertEqual((self.root / "existing").read_bytes(), b"before")
-        self.assertEqual(json.loads(path.read_text())["state"], "recovered")
+        self.assertEqual(json.loads(path.read_text(encoding="utf-8"))["state"], "recovered")
 
     def test_recovery_refuses_unrelated_edits(self):
         self.journal(b"user changed it")
@@ -94,18 +94,18 @@ class StorageMemoryTests(unittest.TestCase):
         memory.init(self.root)
         memory.add(self.root, "DECISIONS", "Keep contracts", "APPROVED")
         file = self.root / memory.filename()
-        raw = file.read_text()
+        raw = file.read_text(encoding="utf-8")
         entry = next(line for line in raw.splitlines() if line.startswith("- ["))
         file.write_text(raw.replace(entry, entry + "\n" + entry))
         memory.compact(self.root)
-        self.assertEqual(file.read_text().count("Keep contracts"), 1)
-        self.assertIn("APPROVED", file.read_text())
+        self.assertEqual(file.read_text(encoding="utf-8").count("Keep contracts"), 1)
+        self.assertIn("APPROVED", file.read_text(encoding="utf-8"))
 
     def test_stale_detection_never_deletes(self):
         memory.init(self.root)
         memory.add(self.root, "KNOWN_ISSUES", "Revalidate fixture behavior")
         file = self.root / memory.filename()
-        raw = file.read_text()
+        raw = file.read_text(encoding="utf-8")
         import re
         file.write_text(re.sub(r"\d{4}-\d{2}-\d{2}", "2020-01-01", raw))
         before = file.read_bytes()
@@ -124,7 +124,7 @@ class StorageMemoryTests(unittest.TestCase):
         memory.init(root, dry_run=True)
         self.assertFalse(root.exists())
         memory.init(root, share_context=True)
-        ignores = (root / ".gitignore").read_text()
+        ignores = (root / ".gitignore").read_text(encoding="utf-8")
         self.assertIn("/.ai-team/context.local.md", ignores)
         self.assertNotIn("/.ai-team/context.md\n", ignores)
 

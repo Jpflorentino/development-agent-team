@@ -33,7 +33,7 @@ def frontmatter(text):
 class AdapterTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.catalog = json.loads((ROOT / "agents/catalog.json").read_text())
+        cls.catalog = json.loads((ROOT / "agents/catalog.json").read_text(encoding="utf-8"))
 
     def test_render_is_deterministic_and_contains_no_absolute_targets(self):
         for platform in PLATFORMS:
@@ -69,7 +69,7 @@ class AdapterTests(unittest.TestCase):
                 else:
                     data, body = frontmatter(profile)
                 self.assertEqual(data["name"], "dat-" + agent["id"])
-                canonical = (ROOT / agent["definition"]).read_text().strip()
+                canonical = (ROOT / agent["definition"]).read_text(encoding="utf-8").strip()
                 self.assertIn(canonical, body)
                 self.assertIn("Shared operating contract", body)
                 self.assertIn("Required specialist response types", body)
@@ -136,7 +136,7 @@ class AdapterTests(unittest.TestCase):
         self.assertIn("does not automatically grant access", setup)
         reference = files[".ai-team/chatgpt/specialist-reference.md"]
         for agent in self.catalog["agents"]:
-            self.assertIn((ROOT / agent["definition"]).read_text().strip(), reference)
+            self.assertIn((ROOT / agent["definition"]).read_text(encoding="utf-8").strip(), reference)
         self.assertIn("independent review as BLOCKED", reference)
         self.assertFalse(any(p in INSTRUCTION_FILES for p in files))
         with self.assertRaisesRegex(ValueError, "global filesystem"):
@@ -156,7 +156,7 @@ class AdapterTests(unittest.TestCase):
             for key, value in (("definition", "../private.md"), ("definition", "/tmp/private.md"), ("definition", "C:/private.md"), ("id", "../other"), ("read_only", "true")):
                 catalog = json.loads(json.dumps(self.catalog))
                 catalog["agents"][0][key] = value
-                catalog_path.write_text(json.dumps(catalog))
+                catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
                 with self.subTest(key=key, value=value), self.assertRaises(ValueError):
                     render(source, "codex", "project")
 
@@ -165,7 +165,7 @@ class AdapterTests(unittest.TestCase):
             source = Path(tmp)
             shutil.copytree(ROOT / "agents", source / "agents")
             shutil.copytree(ROOT / "adapters", source / "adapters")
-            (source / "agents/team-leader.md").write_text("x" * 30001)
+            (source / "agents/team-leader.md").write_text("x" * 30001, encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "30,000 character"):
                 render(source, "github-copilot", "project")
 
@@ -174,7 +174,7 @@ class AdapterTests(unittest.TestCase):
             source = Path(tmp) / "source"
             shutil.copytree(ROOT / "agents", source / "agents")
             private = Path(tmp) / "private.md"
-            private.write_text("outside source")
+            private.write_text("outside source", encoding="utf-8")
             definition = source / self.catalog["agents"][0]["definition"]
             definition.unlink()
             try:
@@ -192,11 +192,18 @@ class AdapterTests(unittest.TestCase):
             catalog = json.loads(json.dumps(self.catalog))
             unusual = 'Contains "quoted" values: backslash \\ and Unicode café\nsecond line'
             catalog["agents"][0]["description"] = unusual
-            (source / "agents/catalog.json").write_text(json.dumps(catalog))
+            (source / "agents/catalog.json").write_text(json.dumps(catalog), encoding="utf-8")
+            unicode_role = "# Team Leader\n\nVerificação: ação, café, € and 日本語.\n"
+            (source / "agents/team-leader.md").write_text(unicode_role, encoding="utf-8")
             data = tomllib.loads(render(source, "codex", "project")[".codex/agents/dat-team-leader.toml"])
             self.assertEqual(data["description"], unusual)
-            data, _ = frontmatter(render(source, "claude-code", "project")[".claude/agents/dat-team-leader.md"])
+            self.assertIn(unicode_role.strip(), data["developer_instructions"])
+            data, body = frontmatter(render(source, "claude-code", "project")[".claude/agents/dat-team-leader.md"])
             self.assertEqual(data["description"], unusual)
+            self.assertIn(unicode_role.strip(), body)
+            bundle = render(source, "chatgpt", "project")
+            self.assertEqual(bundle[".ai-team/framework/chatgpt/agents/team-leader.md"], unicode_role)
+            self.assertIn(unicode_role.strip(), bundle[".ai-team/chatgpt/specialist-reference.md"])
 
 
 if __name__ == "__main__":

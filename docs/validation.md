@@ -30,7 +30,7 @@ python3 scripts/dat.py validate
 python3 -m unittest discover -s tests -v
 ```
 
-Result: **68 tests passed**, and structural validation returned `errors: []`.
+Result after the Unicode portability regression: **69 tests passed**, and structural validation returned `errors: []`.
 
 Independent read-only implementation review identified four defects: unsafe
 Windows stale-lock probing, privacy exclusions disappearing on uninstall,
@@ -112,6 +112,12 @@ The GitHub Actions workflow runs structural validation and the offline suite on
 Linux, macOS and Windows, with Python 3.11, 3.12 and 3.13. Configuration alone is
 not evidence of a successful remote run. Actual CI results are recorded after
 publication. These OS runs exercise the framework, not native AI clients.
+
+The first remote run passed all six Linux/macOS jobs and exposed two test-file
+encoding assumptions on Windows. Explicit UTF-8 fixture reads/writes replaced
+locale defaults, and Unicode roundtrip/ASCII-console regressions were added before
+the full matrix was repeated. Installer/memory filesystem scenarios passed in that
+first Windows run; test encoding failures were not treated as a successful suite.
 
 ## Remaining limitations
 

@@ -99,7 +99,9 @@ def main(argv=None):
         output = {"status": status, "summary": f"{args.command}: {status}", "result": result,
                   "next_actions": ["Resolve reported errors and rerun the same command"] if errors else [],
                   "artifacts": result.get("changed", [])}
-        print(json.dumps(output, indent=2, ensure_ascii=False))
+        # ASCII JSON survives Windows redirected consoles and restrictive locales;
+        # consumers still recover the original Unicode text through JSON decoding.
+        print(json.dumps(output, indent=2, ensure_ascii=True))
         return 2 if errors else 0
     except (Conflict, ValueError, OSError, KeyError, TypeError) as error:
         print(json.dumps({"status": "error", "summary": str(error), "next_actions": [

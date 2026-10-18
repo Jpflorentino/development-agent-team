@@ -34,10 +34,24 @@ class ValidationTests(unittest.TestCase):
             source = Path(folder) / "framework"
             shutil.copytree(ROOT, source, ignore=shutil.ignore_patterns(".git", "__pycache__"))
             path = source / "agents/catalog.json"
-            catalog = json.loads(path.read_text())
+            catalog = json.loads(path.read_text(encoding="utf-8"))
             for agent in catalog["agents"]:
                 if agent["id"] in ("security-engineer", "code-review-engineer"):
                     agent["read_only"] = False
             path.write_text(json.dumps(catalog))
             errors = validate(source)["errors"]
             self.assertTrue(any("mandatory read_only" in message for message in errors), errors)
+
+    def test_unicode_context_works_with_ascii_console_encoding(self):
+        import os
+        from dat import memory
+        with tempfile.TemporaryDirectory() as folder:
+            target = Path(folder)
+            memory.init(target)
+            memory.add(target, "PROJECT", "Engenharia em português — 日本語")
+            env = dict(os.environ, PYTHONIOENCODING="ascii")
+            proc = subprocess.run([sys.executable, str(ROOT / "scripts/dat.py"), "memory", "show", "--target", folder],
+                                  capture_output=True, env=env)
+            self.assertEqual(proc.returncode, 0, proc.stderr.decode("ascii"))
+            result = json.loads(proc.stdout.decode("ascii"))
+            self.assertIn("português — 日本語", result["result"]["text"])
