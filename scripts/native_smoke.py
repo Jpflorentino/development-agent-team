@@ -5,6 +5,7 @@ Temporary synthetic fixtures only. Raw transcripts stay in that temporary folder
 outside the public repository. No auth/config files are copied or modified.
 """
 import argparse
+import hashlib
 import json
 import os
 import shutil
@@ -19,7 +20,7 @@ if sys.version_info < (3, 11):
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dat.installer import maintain
 from dat.memory import init
-from dat.smoke import assess_codex
+from dat.smoke import assess_codex, assess_discovery
 
 PROMPT = """This is an explicitly authorized read-only native-agent smoke test on synthetic data.
 Act as Team Leader. Do not edit files, invoke external services, commit, or install tools.
@@ -57,6 +58,21 @@ are ALL lists, including EVIDENCE and TESTS. Objects are list elements, not fiel
 values. Ask that same child to correct an invalid envelope before finalizing.
 """
 
+DISCOVERY_PROMPT = """Quero começar um projeto do zero: um site para uma empresa
+fictícia de fisioterapia ao domicílio chamada Movimento em Casa. Quero apresentar a equipa, mostrar
+um perfil de cada fisioterapeuta e permitir que as pessoas escolham uma profissional
+e marquem uma sessão na disponibilidade dela. Ainda não escolhemos tecnologia nem
+temos código da aplicação. Não sei se faz mais sentido uma landing page ou um site
+completo. Qual é a tua opinião e o que precisas de saber antes de avançarmos?
+Nesta fase quero apenas discutir a proposta, sem criar a aplicação, instalar
+dependências, ligar serviços externos ou executar marcações reais.
+"""
+
+
+def snapshot(folder):
+    return {path.relative_to(folder).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in folder.rglob("*") if path.is_file() and path.name not in ("stdout.jsonl", "stderr.txt")}
+
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
@@ -64,6 +80,7 @@ def main():
     parser.add_argument("--execute", action="store_true", help="Authorize the model call using your configured account")
     parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--dispatch", choices=("profile", "role-envelope"), default="profile")
+    parser.add_argument("--scenario", choices=("review", "discovery"), default="review")
     args = parser.parse_args()
     binary = "claude" if args.platform == "claude-code" else "codex"
     if not args.execute:
@@ -76,9 +93,11 @@ def main():
     folder = Path(tempfile.mkdtemp(prefix=f"dat-smoke-{args.platform}-")).resolve()
     maintain(root, folder, args.platform)
     init(folder)
-    (folder / "fixture.py").write_text("def average(values):\n    return sum(values) / len(values)\n", encoding="utf-8")
-    with (folder / ".ai-team/context.md").open("a", encoding="utf-8") as stream:
-        stream.write("\n- VERIFIED synthetic smoke marker: DAT_CONTEXT_1_0_0\n")
+    if args.scenario == "review":
+        (folder / "fixture.py").write_text("def average(values):\n    return sum(values) / len(values)\n", encoding="utf-8")
+        with (folder / ".ai-team/context.md").open("a", encoding="utf-8") as stream:
+            stream.write("\n- VERIFIED synthetic smoke marker: DAT_CONTEXT_1_0_0\n")
+    before = snapshot(folder)
     if binary == "codex":
         command = [binary, "exec", "--ignore-user-config", "--skip-git-repo-check", "--sandbox", "read-only",
                    "--json", "--cd", str(folder), "-"]
@@ -87,7 +106,7 @@ def main():
                    "--strict-mcp-config", "--permission-mode", "dontAsk", "--tools", "Read,Glob,Grep,Agent",
                    "--output-format", "stream-json", "--verbose", "--no-session-persistence"]
     try:
-        prompt = ROLE_PROMPT if args.dispatch == "role-envelope" else PROMPT
+        prompt = DISCOVERY_PROMPT if args.scenario == "discovery" else ROLE_PROMPT if args.dispatch == "role-envelope" else PROMPT
         process = subprocess.Popen(command, cwd=folder, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, text=True, encoding="utf-8", start_new_session=os.name != "nt")
         try:
@@ -105,8 +124,14 @@ def main():
         (folder / "stdout.jsonl").write_text(stdout, encoding="utf-8")
         (folder / "stderr.txt").write_text(stderr, encoding="utf-8")
         assessment = {"status": "not_assessed"}
-        if binary == "codex" and args.dispatch == "role-envelope":
-            events = [json.loads(line) for line in stdout.splitlines() if line.strip().startswith("{")]
+        events = [json.loads(line) for line in stdout.splitlines() if line.strip().startswith("{")]
+        if args.scenario == "discovery":
+            assessment = assess_discovery(events)
+            assessment["project_files_unchanged"] = before == snapshot(folder)
+            if not assessment["project_files_unchanged"]:
+                assessment["errors"].append("Project files changed during discussion-only discovery")
+                assessment["status"] = "incomplete"
+        elif binary == "codex" and args.dispatch == "role-envelope":
             thread = next((event["thread_id"] for event in events if event.get("type") == "thread.started"), None)
             if thread:
                 home = Path(os.environ.get("CODEX_HOME", str(Path.home() / ".codex")))
@@ -116,10 +141,11 @@ def main():
                     assessment = assess_codex(records)
         print(json.dumps({"status": "completed_process" if process.returncode == 0 else "blocked_or_failed",
                           "exit_code": process.returncode, "platform": args.platform, "dispatch": args.dispatch, "fixture": str(folder),
+                          "scenario": args.scenario,
                           "transcript": str(folder / "stdout.jsonl"),
                           "assessment": assessment,
                           "note": "Inspect tool events before classifying native delegation as tested"}, indent=2))
-        return process.returncode
+        return 2 if assessment["status"] == "incomplete" else process.returncode
     except subprocess.TimeoutExpired as error:
         for name, raw in (("stdout.jsonl", error.stdout), ("stderr.txt", error.stderr)):
             (folder / name).write_bytes(raw if isinstance(raw, bytes) else (raw or "").encode())

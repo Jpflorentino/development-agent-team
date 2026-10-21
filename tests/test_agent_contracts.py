@@ -1,4 +1,7 @@
-"""Keep native-role report instructions aligned with the executable contract."""
+"""Keep internal role reports aligned with their executable contract.
+
+The Team Leader also has a separate conversational format for the main user chat.
+"""
 import json
 import re
 import unittest
@@ -10,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class AgentContractTests(unittest.TestCase):
-    def test_every_canonical_role_instructs_exact_report_field_types(self):
+    def test_internal_role_reports_instruct_exact_field_types(self):
         catalog = json.loads((ROOT / "agents/catalog.json").read_text(encoding="utf-8"))
         for agent in catalog["agents"]:
             with self.subTest(agent=agent["id"]):

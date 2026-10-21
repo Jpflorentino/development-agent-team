@@ -25,6 +25,8 @@ The leader selects only useful specialists for each task. Independent work can r
 
 You continue the conversation with the Team Leader; it coordinates specialist participation. The Python CLI installs and maintains the team's files. The selected AI platform executes the agents through its available capabilities.
 
+The Team Leader answers you conversationally in your language, with a recommendation or outcome, relevant explanation and focused questions or next steps. Specialist JSON reports are an internal exchange; the leader summarizes their validated contents instead of showing the raw protocol. Structured user-facing output is used when you explicitly ask for it.
+
 Adapters are included for **Claude Code, OpenAI Codex, GitHub Copilot and ChatGPT**. Native agent formats are generated where supported; ChatGPT uses a manual Project export. Installing files does not prove native loading or execution. See the [capability matrix](docs/compatibility.md) and [executed validation evidence](docs/validation.md) for tested behavior and limitations.
 
 ## Team
@@ -105,6 +107,10 @@ python3 -m unittest discover -s tests -v
 ```
 
 Install/update preserve unmanaged files and stop on conflicting managed edits. Uninstall retains project memory. Unit tests use temporary targets; contract/simulation tests never stand in for native agent invocation. [Contributing](docs/contributing.md) explains the validation and release process.
+
+For an opt-in check of a normal new-project conversation, run `python3 scripts/native_smoke.py --platform codex --scenario discovery --execute`. This uses the configured account and quota with a fictional brief in a temporary read-only project. It checks that the leader returns a conversational answer with discovery questions, rather than the internal JSON report, and leaves project files unchanged. It does not establish the quality of every recommendation or validate a booking integration.
+
+After updating canonical instructions in this checkout, use `update` for each existing project installation and start a new conversation so it can load the updated instructions. Installed copies do not change automatically when this framework's source files change.
 
 [`dat/policy.py`](dat/policy.py) supplies deterministic selection and contract/quality-gate helpers for integrations and regression tests. These helpers do not launch models or grant host permissions. Sequential role simulation cannot satisfy an independent-review gate; HIGH/CRITICAL work remains blocked until a genuinely separate review is obtained.
 

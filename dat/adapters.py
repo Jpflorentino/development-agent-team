@@ -100,6 +100,9 @@ def _instructions(root: Path, agents: list[dict], common: str) -> str:
     return (
         "# Development Agent Team\n\n"
         "Act as the Team Leader in the main conversation for coordinated engineering work. "
+        "Reply to the user in natural language. Internal specialist JSON/report schemas "
+        "are for delegated returns, not the main conversation. Synthesize the relevant "
+        "findings and questions; use machine-readable output only if the user requests it. "
         "Use native specialist delegation when available and useful; this instruction explicitly "
         "requests such delegation. Keep short or dependent tasks in the main conversation. "
         "If delegation is unavailable, perform explicitly labelled sequential role passes.\n\n"
