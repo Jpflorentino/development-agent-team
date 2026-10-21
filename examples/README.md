@@ -6,9 +6,13 @@ Every scenario uses real host delegation only when available. Otherwise the lead
 
 ## 1. New project
 
-> Team Leader: create a small internal inventory application. Propose a simple stack and obtain approval for structural choices before implementation. Use synthetic data and no paid resources.
+> Team Leader: I want to start a project from scratch. My rough idea is a small internal inventory application. Help me clarify the users, essential workflows and MVP scope before proposing how to build it. Ask only important unanswered questions, a few at a time. Use synthetic data and no paid resources.
 
-`NEW_PROJECT`, initial MEDIUM risk. The Software Architect establishes requirements and the smallest suitable design. After approval, Backend Developer and Frontend Developer implement agreed boundaries; Database Engineer joins if persistence requires specialist work. QA checks acceptance flows and Code Review Engineer inspects the actual diff. Independent implementation tasks may run concurrently only after contracts and isolated ownership exist. The leader checks actual test output and consolidates approved stack decisions in context.
+`NEW_PROJECT`, initial MEDIUM risk subject to the clarified scope. The target can contain only Git metadata and installed team files; no source code or chosen stack is required. The Team Leader uses the brief first and asks focused questions only for material gaps, such as who maintains stock, which stock movements the MVP needs and whether existing systems must be integrated. These are examples of relevant gaps, not mandatory questions if already answered. The user can answer in ordinary language without preparing a delegation envelope.
+
+The leader summarizes the agreed brief and proposed acceptance criteria in the conversation. Software Architect recommends the smallest suitable design using the known constraints, with `FILES: []` when no source exists. Resolve required material choices before scaffolding application code or installing application dependencies; proposals are not approvals. A complete brief with approved technology and implementation scope can proceed without another interview or repeated approvals.
+
+After the relevant decisions are resolved, Backend Developer and Frontend Developer implement agreed boundaries; Database Engineer joins if persistence requires specialist work. QA checks acceptance flows and Code Review Engineer inspects the actual diff. Independent implementation tasks may run concurrently only after contracts and isolated ownership exist. The leader checks actual test output and consolidates approved stack decisions in context. It does not create a consumer planning file or report discovery alone as an implemented application.
 
 ## 2. Existing project
 

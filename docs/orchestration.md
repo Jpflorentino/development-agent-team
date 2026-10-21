@@ -6,7 +6,7 @@ The framework supplies canonical role instructions, native platform adapters and
 
 ## Session entry and task selection
 
-1. Read the user objective, applicable repository instructions and relevant `.ai-team/context.md` and `.ai-team/context.local.md`. Inspect the current working tree and actual relevant files; memory is a recovery aid, not proof that code is current.
+1. Read the user objective and any available repository instructions, relevant `.ai-team/context.md` and `.ai-team/context.local.md`. Inspect the target folder and any actual relevant files; do not require application code or completed context in a new project. Memory is a recovery aid, not proof that code is current.
 2. Discover the runtime's real tools, authenticated connectors, delegation, isolation, model availability and permission restrictions. Do not assume that a Markdown profile creates a native agent.
 3. Choose one logical mode and a risk level. Identify acceptance criteria, dependencies and the minimum useful specialists. Preserve architecture, stack, business rules, integrations and unrelated user changes by default.
 4. Establish exclusive write ownership and any contract needed before dependent work begins. Native worktrees, sandboxes or isolated directories may be used when supported and appropriate.
@@ -16,7 +16,7 @@ The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX
 
 | Mode | Operational behavior |
 | --- | --- |
-| NEW_PROJECT | Establish goal, constraints, stack, architecture, infrastructure and acceptance criteria; consult Architect without automatically activating every implementer. |
+| NEW_PROJECT | Accept a rough idea or detailed brief; clarify material gaps, propose a proportionate design and resolve required approvals before scaffolding. Consult Architect without automatically activating every implementer. |
 | EXISTING_PROJECT | Inspect relevant structure, stack, instructions, memory, conventions and integrations proportionately before editing. |
 | FEATURE_DEVELOPMENT | Identify affected areas, agree contracts, implement, review, test functionality and consolidate meaningful context. |
 | BUG_FIX | Reproduce when feasible, trace the cause, correct it and verify the fix plus relevant regressions. |
@@ -29,6 +29,14 @@ The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX
 | TESTING | Map acceptance criteria to actual relevant test layers and report executed, failed, skipped and unavailable checks honestly. |
 | DEPLOYMENT | Prepare and validate artifacts, target, rollback and health checks; obtain required environment authorization before effects. |
 | MODERNIZATION | Preserve business rules, contracts and integrations; technology replacement requires approval. |
+
+## New-project discovery
+
+A natural-language idea is valid input to the Team Leader; the internal delegation envelope is not a user questionnaire. Starting in an empty application folder selects `NEW_PROJECT`. Git/platform configuration, installed profiles, `.ai-team/` and introductory documentation do not by themselves establish an existing application. Read what exists without inventing a stack, code paths or a bug to fix.
+
+The leader uses information and approvals already provided. For a vague idea, ask a few focused questions about the goal, intended users, essential workflows, MVP boundaries and relevant constraints. Explain technical choices when the user needs guidance. For a complete brief, skip questions already answered and proceed within its authorization. Discovery should resolve material uncertainty, not become an exhaustive interview or repeated approval loop.
+
+Summarize the brief and proposed acceptance criteria in the conversation. Architect may assess the initial design from that brief with `FILES: []`; other specialists join only when useful. Before application scaffolding, dependency installation or dependent implementation, resolve the material unanswered questions and required approvals. Once ready, establish ownership and contracts, implement, review, test and consolidate approved context. Do not create a consumer planning/progress file or mistake a recommendation for an implemented project.
 
 ## Delegation envelope
 

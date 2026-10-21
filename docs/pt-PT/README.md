@@ -4,6 +4,21 @@ A versão 1.0.0 disponibiliza dez papéis de engenharia, definições canónicas
 
 O Team Leader coordena o trabalho e é o interlocutor do utilizador. Seleciona apenas os especialistas necessários: Software Architect, UI/UX Designer, Frontend Developer, Backend Developer, Database Engineer, QA/Test Engineer, Security Engineer, DevOps Engineer e Code Review Engineer. Os agentes respondem, por defeito, no idioma do utilizador.
 
+## Para que serve
+
+A framework organiza assistentes de programação numa equipa virtual de engenharia de software. Pode utilizá-la para transformar uma ideia num projeto novo, desenvolver funcionalidades numa aplicação existente, corrigir erros, coordenar revisões e testes ou preparar entregas autorizadas. A memória do projeto conserva decisões aprovadas e contexto relevante para continuar noutra sessão.
+
+Recebe definições dos agentes, adaptadores para as plataformas, ferramentas de instalação e gestão de contexto. A execução decorre na plataforma de IA escolhida, com as ferramentas e permissões efetivamente disponíveis; não exige um servidor permanente da framework.
+
+## Como funciona
+
+1. Descreve ao Team Leader o objetivo, seja uma ideia inicial ou uma tarefa num projeto existente.
+2. O Team Leader consulta a informação disponível, esclarece apenas as dúvidas relevantes e coordena as decisões necessárias.
+3. Os especialistas adequados implementam ou analisam o trabalho; o Team Leader integra os resultados e verifica as evidências, revisões e testes proporcionais.
+4. O Team Leader atualiza o contexto duradouro e apresenta o resultado real, incluindo o que ficou por resolver.
+
+Continua a conversar com o Team Leader, que coordena a participação dos especialistas. O instalador prepara os ficheiros; os agentes trabalham dentro da plataforma. A instalação, por si só, não demonstra execução nativa: consulte a [matriz de compatibilidade](../compatibility.md) para as diferenças e limitações.
+
 ## Instalação
 
 Execute a partir da cópia local da framework:
@@ -21,6 +36,24 @@ Substitua `codex` por `claude-code`, `github-copilot` ou `chatgpt`. No Windows p
 Os identificadores nativos têm o prefixo `dat-`, por exemplo `dat-team-leader`. Abra o projeto na plataforma escolhida e confirme o carregamento dos perfis. Instalar ficheiros não demonstra invocação nem delegação. Consulte os [passos por plataforma](../installation.md) e a [matriz de compatibilidade](../compatibility.md).
 
 ## Utilização
+
+Depois da instalação, abra a pasta de destino na plataforma e inicie uma nova conversa. Pode começar numa pasta sem código e sem stack definida; a instalação prepara a equipa, não cria a aplicação.
+
+### Começar um projeto do zero
+
+Explique a ideia em linguagem natural. Não precisa de escolher tecnologias, organizar o repositório ou escrever uma especificação completa antes de começar. Se faltarem dados essenciais, o Team Leader faz algumas perguntas de cada vez; se já tiver fornecido um briefing completo e decisões aprovadas, usa essa informação sem repetir a entrevista.
+
+> Assume o papel de Team Leader da Development Agent Team no modo NEW_PROJECT. Quero criar **[descreve a ideia, o problema e os utilizadores, na medida em que já os conheces]**. Ainda não existe código da aplicação. Ajuda-me a definir os fluxos essenciais, o âmbito do MVP e as restrições. Faz apenas as perguntas importantes que ainda não tenham resposta, em pequenos grupos, antes de recomendar a stack e a arquitetura. Confirma as escolhas relevantes que eu ainda não tenha aprovado antes de criar a estrutura da aplicação ou instalar as suas dependências. Quando essas decisões estiverem resolvidas, coordena a implementação, a revisão e os testes com os especialistas necessários. Não faças commit, push nem pull request sem autorização.
+
+Se a ideia ainda for muito inicial, basta:
+
+> Assume o papel de Team Leader da Development Agent Team. Quero começar um projeto do zero, mas só tenho esta ideia: **[a tua ideia]**. Ajuda-me a clarificá-la e faz as perguntas essenciais antes de propor como a implementar.
+
+A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não significa que já exista uma aplicação. A ausência de código ou de contexto preenchido é normal neste modo. O Team Leader esclarece o produto, consulta o Software Architect quando útil e só depois encaminha a implementação necessária. Não convoca automaticamente os dez agentes nem cria ficheiros de planeamento no projeto.
+
+### Trabalhar num projeto existente
+
+Descreva a funcionalidade, o erro ou a revisão pretendida, por exemplo:
 
 > Assume o papel de Team Leader da Development Agent Team. Lê as instruções do repositório e o contexto em `.ai-team/context.md`, analisa o código relevante e corrige o erro de validação reportado. Preserva a stack existente. Seleciona apenas os especialistas necessários, verifica as ferramentas reais de delegação e apresenta os testes executados e as limitações. Não faças commit, push nem pull request sem autorização.
 
