@@ -9,7 +9,7 @@ python3 scripts/dat.py validate
 
 The installer supports `install`, `update` and `uninstall` with `--platform`, `--scope`, `--target` and `--dry-run`. Supported platform names are `claude-code`, `codex`, `github-copilot` and `chatgpt`. The target for project scope is the consumer repository; for global scope it is the user's home directory, rather than the platform configuration subdirectory.
 
-Project scope also works with a new, empty target folder; application code and a chosen stack are not prerequisites. Installation creates team configuration, not an application scaffold. Open that target folder in the selected platform and use the [new-project starting prompt](../README.md#start-a-project-from-scratch). The Team Leader clarifies an incomplete idea before the necessary design choices and implementation.
+Project scope also works with a new, empty target folder; application code and a chosen stack are not prerequisites. Installation creates team configuration, not an application scaffold. Open that target folder in the selected platform and start a new conversation. Describe your idea normally; the installed main instructions activate the Team Leader without a role invocation or formatting prompt. See the [natural-language example](../README.md#start-a-project-from-scratch). The leader discusses architecture with Architect, obtains approval, then proposes tasks for execution approval. Deployment/cost decisions are discussed separately when relevant.
 
 ## Claude Code
 

@@ -139,3 +139,19 @@ revision. No private host configuration or native raw transcripts were published
   sequential role passes do not provide independent review.
 - Model quality, token cost and task completion are not benchmarked across a
   representative workload. The smoke is intentionally small and synthetic.
+
+## Conversation-phase audit — 22 October 2026
+
+The instructions now separate architecture discussion/approval, task allocation and execution approval, implementation, and a later or explicitly requested deployment/cost discussion. Main-conversation instructions omit internal report field schemas, while delegated profiles and canonical references retain them. Both READMEs show ordinary project descriptions without an activation phrase.
+
+Local checks on macOS/Python 3.12: **79 tests passed** and structural validation returned no errors. Five new harness tests simulate CLI events to check same-session read-only continuation, stopping on usage failure or project mutation, session mismatch rejection and opt-in execution. A separate adapter regression checks that user-facing instructions omit internal schemas while preserving runtime policy and complete delegated contracts. These deterministic tests do not establish model behavior.
+
+An actual four-turn Codex test was attempted with synthetic data: a natural Portuguese brief, an informational architecture question, architecture-only approval and a later deployment/cost discussion. The model began reading context and consulting architecture, then the account usage limit interrupted the first turn before its final response. The synthetic project remained unchanged. **Multi-turn phase compliance is NOT VERIFIED**; do not classify the attempted run as passed. Raw account/session transcripts remain outside the repository.
+
+Run the opt-in test when account quota is available:
+
+```sh
+python3 scripts/native_phase_smoke.py --execute --timeout 240
+```
+
+Review the emitted checklist and actual native tool/dispatch/completion events. Successful automatic format/hash checks alone do not prove phase semantics, approval enforcement, independent consultation or correct current cost advice.

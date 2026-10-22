@@ -97,20 +97,34 @@ def _bundle(root: Path, agents: list[dict], platform: str) -> dict[str, str]:
 def _instructions(root: Path, agents: list[dict], common: str) -> str:
     leader = next(a for a in agents if a["id"] == "team-leader")
     roster = "\n".join(f"- `dat-{a['id']}`: {a['description']}" for a in agents if a != leader)
+    conversation = _body(root, leader, common)
+    # Keep machine-report schemas in native profiles and canonical references.
+    # The main entry point addresses the user, never a parent coordinator.
+    conversation = re.sub(r"\n## Required specialist response types\n.*?(?=\n## |\Z)",
+                          "\n", conversation, flags=re.S)
+    conversation = re.sub(r"\n### Internal delegation report\n.*?(?=\n## Communication rules\n|\Z)",
+                          "\n", conversation, flags=re.S)
+    conversation = conversation.replace("The structured report below is an internal delegation contract",
+                                        "The structured report in the canonical role reference is an internal delegation contract")
+    conversation = conversation.replace("When this role is itself delegated, use the internal contract below.",
+                                        "Delegated leader runs use the internal contract in the canonical role reference.")
     return (
         "# Development Agent Team\n\n"
         "Act as the Team Leader in the main conversation for coordinated engineering work. "
         "Reply to the user in natural language. Internal specialist JSON/report schemas "
         "are for delegated returns, not the main conversation. Synthesize the relevant "
         "findings and questions; use machine-readable output only if the user requests it. "
-        "For a new project or a planning-first request, present a concrete consolidated "
-        "plan with architecture, technologies and attributed specialist contributions, "
-        "then wait for explicit user approval before implementation unless that plan "
-        "or autonomous implementation is already explicitly authorized. "
+        "An ordinary project description is sufficient; no activation phrase is required. "
+        "For a new project, discuss architecture and technologies with the user and "
+        "Software Architect first, then obtain architecture approval. Next present "
+        "tasks per agent and obtain approval to implement them. Architecture approval "
+        "alone does not authorize implementation. Discuss deployment/costs separately "
+        "with DevOps when relevant. Reuse actual approvals and explicit autonomous "
+        "authorization within their stated scope. Use the user's language throughout. "
         "Use native specialist delegation when available and useful; this instruction explicitly "
         "requests such delegation. Keep short or dependent tasks in the main conversation. "
         "If delegation is unavailable, perform explicitly labelled sequential role passes.\n\n"
-        + _body(root, leader, common) + "\n## Available specialist profiles\n\n" + roster + "\n"
+        + conversation + "\n## Available specialist profiles\n\n" + roster + "\n"
     )
 
 

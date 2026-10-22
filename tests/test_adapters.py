@@ -96,6 +96,30 @@ class AdapterTests(unittest.TestCase):
                 self.assertNotIn("tools", copilot)
                 self.assertNotIn("features", codex)
 
+    def test_main_conversation_omits_internal_schemas_but_keeps_runtime_and_roles(self):
+        for platform in PLATFORMS:
+            for scope in ("project", "global"):
+                if (platform, scope) == ("chatgpt", "global"):
+                    continue
+                with self.subTest(platform=platform, scope=scope):
+                    files = render(ROOT, platform, scope)
+                    name = next((p for p in files if p in INSTRUCTION_FILES),
+                                ".ai-team/chatgpt/project-instructions.md")
+                    main = files[name]
+                    self.assertNotIn("## Required specialist response types", main)
+                    self.assertNotIn("### Internal delegation report", main)
+                    self.assertNotIn("`STATUS`: string", main)
+                    self.assertIn("### User conversation", main)
+                    self.assertIn("## Communication rules", main)
+                    self.assertIn("## Available specialist profiles", main)
+                    runtime = (ROOT / f"adapters/{platform}/runtime.md").read_text().strip()
+                    self.assertIn(runtime, main)
+                    canonical = files[f".ai-team/framework/{platform}/agents/team-leader.md"]
+                    self.assertIn("### Internal delegation report", canonical)
+                    if platform == "codex":
+                        profile = tomllib.loads(files[".codex/agents/dat-team-leader.toml"])
+                        self.assertIn("`STATUS`: string", profile["developer_instructions"])
+
     def test_project_and_global_native_instruction_locations(self):
         expected = {
             "claude-code": ("CLAUDE.md", ".claude/CLAUDE.md"),

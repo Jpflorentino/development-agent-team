@@ -148,9 +148,9 @@ def main():
                 assessment["status"] = "incomplete"
             if args.scenario == "planning":
                 assessment["manual_review_required"] = [
-                    "Concrete stack/architecture, rationale, alternatives and delivery/validation stages",
+                    "Architecture decision sheet with rationale, alternatives and real Architect consultation",
                     "Truthful specialist attribution checked against actual dispatch/completion events",
-                    "Explicit plan approval requested; no implementation dispatched or attempted",
+                    "Architecture approval requested; no premature execution allocation or implementation",
                     "Read-only sandbox is a backstop, not proof of voluntary approval enforcement",
                 ]
         elif binary == "codex" and args.dispatch == "role-envelope":

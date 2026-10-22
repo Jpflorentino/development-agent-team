@@ -12,14 +12,17 @@ Recebe definições dos agentes, adaptadores para as plataformas, ferramentas de
 
 ## Como funciona
 
-1. Descreve ao Team Leader o objetivo, seja uma ideia inicial ou uma tarefa num projeto existente.
-2. Num projeto novo, o Team Leader esclarece as dúvidas relevantes e consulta os especialistas úteis apenas para análise. Apresenta um plano consolidado com âmbito, arquitetura, tecnologias, motivos, alternativas, custos, etapas e validação.
-3. Revê e aprova esse plano, ou pede alterações. Só depois começa a implementação, salvo aprovação anterior do mesmo plano ou autorização explícita para escolher e implementar autonomamente. O Team Leader integra os resultados e verifica as evidências, revisões e testes proporcionais.
-4. O Team Leader atualiza o contexto duradouro e apresenta o resultado real, incluindo o que ficou por resolver.
+1. Descreve normalmente o que queres criar ou alterar. As instruções instaladas ativam o Team Leader; não é necessário nomear o papel nem pedir português ou ausência de JSON.
+2. Discute o produto, a arquitetura e as tecnologias com o Team Leader, que consulta o Software Architect quando essas escolhas estão por decidir. Recebe opções, motivos e alternativas, e aprova ou pede alterações.
+3. Depois da aprovação da arquitetura, recebe uma tabela de tarefas por agente, entregáveis, dependências e critérios de validação. Aprova a execução desse plano antes da implementação. Aprovar apenas a arquitetura não autoriza escrever a aplicação.
+4. Quando fizer sentido, discute deployment e custos com o Team Leader e o DevOps, numa fase própria. A escolha de fornecedor ou orçamento não autoriza automaticamente a contratação ou publicação.
+5. O Team Leader coordena o trabalho aprovado, verifica os resultados e conserva decisões duradouras com a referência da aprovação. Reutiliza autorizações já dadas para o mesmo âmbito, sem repetir confirmações desnecessárias.
 
 Continua a conversar com o Team Leader, que coordena a participação dos especialistas. O instalador prepara os ficheiros; os agentes trabalham dentro da plataforma. A instalação, por si só, não demonstra execução nativa: consulte a [matriz de compatibilidade](../compatibility.md) para as diferenças e limitações.
 
 O Team Leader responde em linguagem natural, no seu idioma, com a recomendação ou resultado, a explicação relevante e as perguntas ou próximos passos. Os relatórios JSON dos especialistas são comunicação interna; o Team Leader sintetiza as conclusões validadas. Só apresenta um formato estruturado ao utilizador quando este o pede explicitamente.
+
+As instruções geradas para a conversa principal omitem os esquemas de campos JSON internos. Esses contratos continuam nos perfis delegados e nas referências canónicas, para os relatórios dos especialistas.
 
 O plano identifica a tarefa atribuída a cada especialista relevante, o estado real da participação, a recomendação, os motivos e as evidências disponíveis. Os papéis desnecessários são identificados com uma justificação breve; não se convocam os dez agentes só para preencher um relatório. Uma delegação nativa, uma passagem sequencial por um papel e uma proposta do líder são situações distintas. Ter o perfil instalado não prova que recebeu uma tarefa.
 
@@ -47,11 +50,9 @@ Depois da instalação, abra a pasta de destino na plataforma e inicie uma nova 
 
 Explique a ideia em linguagem natural. Não precisa de escolher tecnologias, organizar o repositório ou escrever uma especificação completa antes de começar. Se faltarem dados essenciais, o Team Leader faz algumas perguntas de cada vez; se já tiver fornecido um briefing completo e decisões aprovadas, usa essa informação sem repetir a entrevista.
 
-> Assume o papel de Team Leader da Development Agent Team no modo NEW_PROJECT. Quero criar **[descreve a ideia, o problema e os utilizadores, na medida em que já os conheces]**. Ainda não existe código da aplicação. Ajuda-me a definir os fluxos essenciais, o âmbito do MVP e as restrições. Faz apenas as perguntas importantes que ainda não tenham resposta, em pequenos grupos. Consulta os especialistas úteis apenas para análise e apresenta um plano consolidado: tarefa e resultado real de cada papel, arquitetura, tecnologias, motivos, alternativas, riscos, custos, etapas e validação. Aguarda a minha aprovação desse plano antes de implementar. Reutiliza qualquer aprovação que eu já tenha dado para esse plano e âmbito. Não faças commit, push nem pull request sem autorização.
+> Quero criar um site para uma empresa de fisioterapia ao domicílio. Quero apresentar a equipa e permitir escolher uma profissional e pedir uma sessão. Ainda não escolhi tecnologias. Ajuda-me a definir a melhor abordagem.
 
-Se a ideia ainda for muito inicial, basta:
-
-> Assume o papel de Team Leader da Development Agent Team. Quero começar um projeto do zero, mas só tenho esta ideia: **[a tua ideia]**. Ajuda-me a clarificá-la e faz as perguntas essenciais antes de propor como a implementar.
+Este pedido deve iniciar a discussão de arquitetura, com consulta ao arquiteto. Depois da tua aprovação, o líder prepara as tarefas dos agentes e pede autorização para as executar. O deployment e os custos podem ser discutidos posteriormente. Não tens de repetir estas regras na prompt.
 
 A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não significa que já exista uma aplicação. A ausência de código ou de contexto preenchido é normal neste modo. O Team Leader esclarece o produto, consulta o Software Architect quando útil e só depois encaminha a implementação necessária. Não convoca automaticamente os dez agentes nem cria ficheiros de planeamento no projeto.
 
@@ -63,7 +64,7 @@ A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não signi
 
 Descreva a funcionalidade, o erro ou a revisão pretendida, por exemplo:
 
-> Assume o papel de Team Leader da Development Agent Team. Lê as instruções do repositório e o contexto em `.ai-team/context.md`, analisa o código relevante e corrige o erro de validação reportado. Preserva a stack existente. Seleciona apenas os especialistas necessários, verifica as ferramentas reais de delegação e apresenta os testes executados e as limitações. Não faças commit, push nem pull request sem autorização.
+> Corrige o erro de validação quando o cliente **[descreve o problema e como o reproduzir]**. O resultado esperado é **[descreve o comportamento]**.
 
 Quando existem subagentes nativos, o Team Leader pode delegar tarefas delimitadas. Sem esse mecanismo, executa passagens sequenciais pelos papéis e identifica essa limitação. Uma passagem de revisão na mesma conversa não constitui revisão independente. Riscos HIGH e CRITICAL exigem uma revisão separada para satisfazer o respetivo gate.
 
