@@ -19,13 +19,15 @@ The leader selects only useful specialists for each task. Independent work can r
 ## How it works
 
 1. **Describe the objective.** Start with a rough idea, a detailed brief, a feature request, a bug or a review task. You do not need to prepare internal agent instructions.
-2. **Clarify and decide.** The Team Leader reads available project information, asks only material unanswered questions and coordinates the necessary product and technical choices. Existing answers, approvals and project conventions are reused.
-3. **Implement and verify.** The leader delegates scoped work to the relevant specialists, integrates their results and checks actual changes, review findings and proportionate tests.
+2. **Review the proposal.** For a new project, the Team Leader consults useful specialists in analysis-only mode and presents the product scope, architecture, technologies, tradeoffs, delivery stages and each specialist's actual contribution. Existing answers, approvals and project conventions are reused.
+3. **Approve, implement and verify.** Implementation starts after your explicit approval of that concrete plan, unless you already approved it or explicitly authorized autonomous choices and implementation. The leader delegates scoped work, integrates results and checks actual changes, review findings and proportionate tests.
 4. **Keep context and report.** The leader records durable, nonsecret project context and explains what was implemented, tested, remains proposed or is blocked.
 
 You continue the conversation with the Team Leader; it coordinates specialist participation. The Python CLI installs and maintains the team's files. The selected AI platform executes the agents through its available capabilities.
 
 The Team Leader answers you conversationally in your language, with a recommendation or outcome, relevant explanation and focused questions or next steps. Specialist JSON reports are an internal exchange; the leader summarizes their validated contents instead of showing the raw protocol. Structured user-facing output is used when you explicitly ask for it.
+
+The plan identifies who was actually consulted, the task assigned, its status, recommendation, rationale and evidence. Roles not needed are identified without activating all ten. Native delegation, sequential role passes and leader proposals are labelled distinctly; installed profiles alone do not prove that an agent received a task. See the [planning and approval protocol](docs/orchestration.md#reviewable-plan-and-approval).
 
 Adapters are included for **Claude Code, OpenAI Codex, GitHub Copilot and ChatGPT**. Native agent formats are generated where supported; ChatGPT uses a manual Project export. Installing files does not prove native loading or execution. See the [capability matrix](docs/compatibility.md) and [executed validation evidence](docs/validation.md) for tested behavior and limitations.
 
@@ -75,13 +77,17 @@ After installation, open the target folder in your platform and start a new conv
 
 Describe what you want to build in ordinary language. You do not need to choose a framework, design a repository structure or prepare a complete specification first. If you only have an idea, the Team Leader guides discovery with a few focused questions at a time. If your brief already answers them, the leader uses those answers without repeating the interview.
 
-> Act as the Development Agent Team Leader in NEW_PROJECT mode. I want to build **[describe your idea, the problem and intended users, as far as you know them]**. This project has no application code yet. Help me define the essential workflows, MVP scope and constraints. Ask only the important unanswered questions, in small groups, before recommending a stack and architecture. Confirm any material choices that I have not already approved before creating application scaffolding or installing application dependencies. Once those decisions are resolved, coordinate implementation, review and testing with the specialists needed. Do not commit, push or open a pull request without authorization.
+> Act as the Development Agent Team Leader in NEW_PROJECT mode. I want to build **[describe your idea, the problem and intended users, as far as you know them]**. This project has no application code yet. Help me define the essential workflows, MVP scope and constraints. Ask only important unanswered questions, in small groups. Consult the useful specialists in analysis-only mode and present a consolidated plan: each role's actual assignment and result, architecture, technologies, reasons, alternatives, risks, costs, delivery stages and validation. Wait for my approval of that plan before implementing. Reuse any approval I have already given for that plan and scope. Do not commit, push or open a pull request without authorization.
 
 For an even earlier starting point, this is enough:
 
 > Act as the Development Agent Team Leader. I want to start a project from scratch, but I only have a rough idea: **[your idea]**. Help me clarify it and ask the essential questions before proposing how to build it.
 
 An empty application folder is expected in this mode. Installation files such as `.codex/`, `.ai-team/`, `AGENTS.md` and Git metadata do not make it an existing application. Missing source files, an unset stack or unfilled context templates are not failures. The leader clarifies the product first, consults the Software Architect when useful, and delegates implementation after the relevant decisions are resolved. It does not activate all ten agents automatically or create planning files in your project.
+
+### Explain a project already started
+
+> Pause implementation and assess the current project read-only. Explain the stack, architecture and relevant integrations from the actual files. For each specialist, identify the task assigned, participation status, recommendation and evidence where records exist. Distinguish observed code from documented historical decisions and approvals; mark unavailable history unverified. Label any new consultations retrospective. Present the proposed next steps for my approval before further implementation.
 
 ### Work on an existing project
 
@@ -111,6 +117,8 @@ Install/update preserve unmanaged files and stop on conflicting managed edits. U
 For an opt-in check of a normal new-project conversation, run `python3 scripts/native_smoke.py --platform codex --scenario discovery --execute`. This uses the configured account and quota with a fictional brief in a temporary read-only project. It checks that the leader returns a conversational answer with discovery questions, rather than the internal JSON report, and leaves project files unchanged. It does not establish the quality of every recommendation or validate a booking integration.
 
 After updating canonical instructions in this checkout, use `update` for each existing project installation and start a new conversation so it can load the updated instructions. Installed copies do not change automatically when this framework's source files change.
+
+`python3 scripts/native_smoke.py --platform codex --scenario planning --execute --timeout 240` uses a complete fictional brief without explicitly asking the model to wait for approval. Manually inspect the proposal, approval request, dispatch/completion evidence and any attempted implementation against the emitted checklist. Automatic checks cover conversational format, a question and unchanged fixture files only; the read-only sandbox does not establish voluntary enforcement or guarantee future sessions.
 
 [`dat/policy.py`](dat/policy.py) supplies deterministic selection and contract/quality-gate helpers for integrations and regression tests. These helpers do not launch models or grant host permissions. Sequential role simulation cannot satisfy an independent-review gate; HIGH/CRITICAL work remains blocked until a genuinely separate review is obtained.
 

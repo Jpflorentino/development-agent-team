@@ -13,13 +13,15 @@ Recebe definições dos agentes, adaptadores para as plataformas, ferramentas de
 ## Como funciona
 
 1. Descreve ao Team Leader o objetivo, seja uma ideia inicial ou uma tarefa num projeto existente.
-2. O Team Leader consulta a informação disponível, esclarece apenas as dúvidas relevantes e coordena as decisões necessárias.
-3. Os especialistas adequados implementam ou analisam o trabalho; o Team Leader integra os resultados e verifica as evidências, revisões e testes proporcionais.
+2. Num projeto novo, o Team Leader esclarece as dúvidas relevantes e consulta os especialistas úteis apenas para análise. Apresenta um plano consolidado com âmbito, arquitetura, tecnologias, motivos, alternativas, custos, etapas e validação.
+3. Revê e aprova esse plano, ou pede alterações. Só depois começa a implementação, salvo aprovação anterior do mesmo plano ou autorização explícita para escolher e implementar autonomamente. O Team Leader integra os resultados e verifica as evidências, revisões e testes proporcionais.
 4. O Team Leader atualiza o contexto duradouro e apresenta o resultado real, incluindo o que ficou por resolver.
 
 Continua a conversar com o Team Leader, que coordena a participação dos especialistas. O instalador prepara os ficheiros; os agentes trabalham dentro da plataforma. A instalação, por si só, não demonstra execução nativa: consulte a [matriz de compatibilidade](../compatibility.md) para as diferenças e limitações.
 
 O Team Leader responde em linguagem natural, no seu idioma, com a recomendação ou resultado, a explicação relevante e as perguntas ou próximos passos. Os relatórios JSON dos especialistas são comunicação interna; o Team Leader sintetiza as conclusões validadas. Só apresenta um formato estruturado ao utilizador quando este o pede explicitamente.
+
+O plano identifica a tarefa atribuída a cada especialista relevante, o estado real da participação, a recomendação, os motivos e as evidências disponíveis. Os papéis desnecessários são identificados com uma justificação breve; não se convocam os dez agentes só para preencher um relatório. Uma delegação nativa, uma passagem sequencial por um papel e uma proposta do líder são situações distintas. Ter o perfil instalado não prova que recebeu uma tarefa.
 
 ## Instalação
 
@@ -45,13 +47,17 @@ Depois da instalação, abra a pasta de destino na plataforma e inicie uma nova 
 
 Explique a ideia em linguagem natural. Não precisa de escolher tecnologias, organizar o repositório ou escrever uma especificação completa antes de começar. Se faltarem dados essenciais, o Team Leader faz algumas perguntas de cada vez; se já tiver fornecido um briefing completo e decisões aprovadas, usa essa informação sem repetir a entrevista.
 
-> Assume o papel de Team Leader da Development Agent Team no modo NEW_PROJECT. Quero criar **[descreve a ideia, o problema e os utilizadores, na medida em que já os conheces]**. Ainda não existe código da aplicação. Ajuda-me a definir os fluxos essenciais, o âmbito do MVP e as restrições. Faz apenas as perguntas importantes que ainda não tenham resposta, em pequenos grupos, antes de recomendar a stack e a arquitetura. Confirma as escolhas relevantes que eu ainda não tenha aprovado antes de criar a estrutura da aplicação ou instalar as suas dependências. Quando essas decisões estiverem resolvidas, coordena a implementação, a revisão e os testes com os especialistas necessários. Não faças commit, push nem pull request sem autorização.
+> Assume o papel de Team Leader da Development Agent Team no modo NEW_PROJECT. Quero criar **[descreve a ideia, o problema e os utilizadores, na medida em que já os conheces]**. Ainda não existe código da aplicação. Ajuda-me a definir os fluxos essenciais, o âmbito do MVP e as restrições. Faz apenas as perguntas importantes que ainda não tenham resposta, em pequenos grupos. Consulta os especialistas úteis apenas para análise e apresenta um plano consolidado: tarefa e resultado real de cada papel, arquitetura, tecnologias, motivos, alternativas, riscos, custos, etapas e validação. Aguarda a minha aprovação desse plano antes de implementar. Reutiliza qualquer aprovação que eu já tenha dado para esse plano e âmbito. Não faças commit, push nem pull request sem autorização.
 
 Se a ideia ainda for muito inicial, basta:
 
 > Assume o papel de Team Leader da Development Agent Team. Quero começar um projeto do zero, mas só tenho esta ideia: **[a tua ideia]**. Ajuda-me a clarificá-la e faz as perguntas essenciais antes de propor como a implementar.
 
 A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não significa que já exista uma aplicação. A ausência de código ou de contexto preenchido é normal neste modo. O Team Leader esclarece o produto, consulta o Software Architect quando útil e só depois encaminha a implementação necessária. Não convoca automaticamente os dez agentes nem cria ficheiros de planeamento no projeto.
+
+### Explicar um projeto já iniciado
+
+> Suspende a implementação e analisa o projeto atual apenas em leitura. Explica a stack, a arquitetura e as integrações a partir dos ficheiros existentes. Para cada especialista, identifica a tarefa atribuída, o estado da participação, a recomendação e as evidências quando existirem registos. Distingue o que observaste no código das decisões e aprovações históricas documentadas; assinala como não verificado o histórico indisponível. Identifica novas consultas como retrospetivas. Apresenta os próximos passos para minha aprovação antes de continuar a implementar.
 
 ### Trabalhar num projeto existente
 

@@ -16,7 +16,7 @@ The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX
 
 | Mode | Operational behavior |
 | --- | --- |
-| NEW_PROJECT | Accept a rough idea or detailed brief; clarify material gaps, propose a proportionate design and resolve required approvals before scaffolding. Consult Architect without automatically activating every implementer. |
+| NEW_PROJECT | Clarify the idea, consult useful specialists in analysis-only mode, present the consolidated plan and wait for explicit user approval before implementation. Reuse actual prior plan approval or explicit autonomous authorization. |
 | EXISTING_PROJECT | Inspect relevant structure, stack, instructions, memory, conventions and integrations proportionately before editing. |
 | FEATURE_DEVELOPMENT | Identify affected areas, agree contracts, implement, review, test functionality and consolidate meaningful context. |
 | BUG_FIX | Reproduce when feasible, trace the cause, correct it and verify the fix plus relevant regressions. |
@@ -36,7 +36,27 @@ A natural-language idea is valid input to the Team Leader; the internal delegati
 
 The leader uses information and approvals already provided. For a vague idea, ask a few focused questions about the goal, intended users, essential workflows, MVP boundaries and relevant constraints. Explain technical choices when the user needs guidance. For a complete brief, skip questions already answered and proceed within its authorization. Discovery should resolve material uncertainty, not become an exhaustive interview or repeated approval loop.
 
-Summarize the brief and proposed acceptance criteria in the conversation. Architect may assess the initial design from that brief with `FILES: []`; other specialists join only when useful. Before application scaffolding, dependency installation or dependent implementation, resolve the material unanswered questions and required approvals. Once ready, establish ownership and contracts, implement, review, test and consolidate approved context. Do not create a consumer planning/progress file or mistake a recommendation for an implemented project.
+Summarize the brief and proposed acceptance criteria in the conversation. Architect may assess the initial design from that brief with `FILES: []`; other specialists join only when useful. Planning assignments explicitly permit analysis only, without application edits, scaffolding, dependency installation, migrations or external provisioning. Present the consolidated plan below and wait for explicit approval before implementing. A complete brief or a general request to create a product does not approve an unseen technical plan. Actual prior approval covering the plan and scope, or explicit authorization to choose and implement autonomously, remains valid. Do not create a consumer planning/progress file or mistake a recommendation for an implemented project.
+
+## Reviewable plan and approval
+
+For new projects and explicit planning-first requests, the Team Leader presents:
+
+- The understood product, MVP boundaries, exclusions, assumptions, open questions and acceptance criteria.
+- Each relevant specialist's actual assignment and participation status, recommendation, reason, meaningful alternative/tradeoff and supporting evidence or uncertainty. Show runtime task references when available; identify roles not consulted with a brief reason rather than automatically running all profiles.
+- The integrated architecture, component/data flows and technologies, including their product purpose; applicable design, persistence, integrations, security/privacy, hosting, cost and validation decisions. Omit unnecessary layers.
+- Delivery stages, responsible roles, dependencies, outcomes, checks and unresolved choices.
+- A clear request to approve or revise that concrete plan. Stop before scaffolding, application dependencies, application code edits or implementation dispatch while approval is pending.
+
+Specialists use the existing internal report arrays: recommendations and alternatives in `DECISIONS`/`RISKS`, inspected facts and actual tool references in `EVIDENCE`. The leader validates and attributes their contributions conversationally. Recommendations remain proposals until approved. A completed analysis, silence or elapsed time never authorizes dependent implementation. Requested revisions amend the proposal; existing explicit approval of the same plan and scope need not be requested again.
+
+After approval, establish contracts/ownership, implement, review and test. Record only compact durable choices, approved scope and the actual authorization reference in project context. Material changes to the approved architecture, technologies, product scope or cost return to the user before dependent implementation. Routine reversible details within approved scope proceed normally.
+
+## Participation evidence and already-started projects
+
+At meaningful handoffs and completion, summarize the actual contribution and result of each participating role. Distinguish native assignment/completion, pending or failed/blocked work, sequential role simulation, leader recommendations awaiting consultation, and roles not consulted. Installed profiles, role names and a proposed roster are not dispatch evidence. Use actual invocation/completion events and exposed task references; never invent identifiers or imply native named-profile loading when only a role envelope was supplied.
+
+If planning visibility is requested after implementation has started, inspect the current project read-only. Explain its observed stack, architecture and relevant behavior with file evidence. Separately list historical decisions, approvals and agent assignments only where records support them. Code cannot establish who made a past choice. Mark missing history unverified; label new consultations retrospective. Present the current state and proposed continuation for review before further implementation; do not restart, rewrite or retroactively approve the existing application.
 
 ## Delegation envelope
 

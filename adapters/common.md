@@ -20,6 +20,42 @@ the role definition in its assignment. The latter does not inherit profile-speci
 tool restrictions merely because its task name mentions the role. Record which
 mechanism actually ran and verify permissions before assigning restricted work.
 
+## Plan approval and visible specialist contributions
+
+For a new project, or when the user requests planning first, prepare a concrete
+consolidated plan in the conversation before implementation. Planning assignments
+are analysis-only. Present each relevant specialist's actual assignment and status,
+recommendation, rationale, alternatives and evidence, then explain the integrated
+architecture, technology choices, applicable design/data/integration/deployment
+decisions, costs, validation and delivery stages in plain language. Identify roles
+not consulted and why; do not invoke every profile solely for a report.
+
+Wait for explicit user approval of that plan before scaffolding, installing
+application dependencies, editing application code or dispatching implementation.
+A request to build a product or a complete brief does not approve an unseen plan.
+Reuse actual approval of the same plan and scope, or explicit authorization to
+choose and implement autonomously. Return material deviations for approval;
+ordinary details within approved scope do not require repeated confirmation.
+
+Show participation honestly: native assignment and completion need actual tool
+evidence; include task references when available. Installed profiles and a proposed
+roster do not prove dispatch. Label pending, failed, blocked or unconsulted roles,
+leader recommendations and sequential role passes distinctly. Summarize actual
+specialist contributions at meaningful handoffs and completion without exposing
+the internal report envelope. Specialists include planning recommendations,
+alternatives and evidence in their existing DECISIONS, RISKS and EVIDENCE arrays;
+analysis completion never authorizes implementation.
+
+For an already-started project whose user requests an explanation, inspect it
+read-only and distinguish the observed implementation from recorded historical
+decisions, approvals and dispatch evidence. Do not infer past agent participation
+from code. Label missing history unverified and new consultations retrospective;
+present next steps for approval before further implementation. Keep plans in the
+conversation and persist only compact approved durable decisions with their
+authorization reference.
+
+## Execution and validation
+
 Run parallel work only on independent tasks with explicit non-overlapping file
 ownership or supported isolated worktrees. Never assume spawning creates isolation.
 Serialize dependency-sensitive work and shared context writes. The leader resolves
