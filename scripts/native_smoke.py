@@ -141,7 +141,7 @@ def main():
         assessment = {"status": "not_assessed"}
         events = [json.loads(line) for line in stdout.splitlines() if line.strip().startswith("{")]
         if args.scenario in ("discovery", "planning"):
-            assessment = assess_discovery(events)
+            assessment = assess_discovery(events, require_question=args.scenario == "discovery")
             assessment["project_files_unchanged"] = before == snapshot(folder)
             if not assessment["project_files_unchanged"]:
                 assessment["errors"].append("Project files changed during discussion-only discovery")

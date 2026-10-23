@@ -90,7 +90,9 @@ def main():
         events = [json.loads(line) for line in stdout.splitlines() if line.strip().startswith("{")]
         observed_thread = next((e.get("thread_id") for e in events if e.get("type") == "thread.started"), None)
         thread = thread or observed_thread
-        assessment = assess_discovery(events)
+        # An explanatory follow-up may correctly continue discussion without '?'.
+        # Approval boundaries are evaluated against the manual rubric, not punctuation.
+        assessment = assess_discovery(events, require_question=False)
         unchanged = before == snapshot(folder)
         errors = list(assessment["errors"])
         if code:

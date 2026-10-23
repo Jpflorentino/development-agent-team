@@ -5,7 +5,7 @@ import re
 from .policy import REPORT_FIELDS, validate_report
 
 
-def assess_discovery(events):
+def assess_discovery(events, *, require_question=True):
     """Check a normal discovery turn's format, not the truth of its advice."""
     messages, errors = [], []
     completed = False
@@ -40,11 +40,12 @@ def assess_discovery(events):
         internal_dump = True
     if internal_dump:
         errors.append("Internal report leaked into the normal user conversation")
-    if "?" not in response:
+    if require_question and "?" not in response:
         errors.append("No discovery question observed for the incomplete brief")
     return {"status": "passed" if not errors else "incomplete", "errors": errors,
             "internal_report_exposed": internal_dump, "asks_discovery_questions": "?" in response,
-            "scope": "Output format and presence of questions only; not a full advice-quality evaluation"}
+            "scope": ("Output format and presence of questions only; not a full advice-quality evaluation"
+                      if require_question else "Output format only; approval semantics require manual review")}
 
 
 def assess_codex(records):

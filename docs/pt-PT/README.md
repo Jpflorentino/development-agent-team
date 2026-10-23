@@ -20,6 +20,8 @@ Recebe definições dos agentes, adaptadores para as plataformas, ferramentas de
 
 Continua a conversar com o Team Leader, que coordena a participação dos especialistas. O instalador prepara os ficheiros; os agentes trabalham dentro da plataforma. A instalação, por si só, não demonstra execução nativa: consulte a [matriz de compatibilidade](../compatibility.md) para as diferenças e limitações.
 
+As fases de aprovação são instruções ao modelo. O instalador não acrescenta um bloqueio técnico antes de cada ferramenta, e o Codex não chama automaticamente os validadores Python antes de escrever ficheiros. Para impedir tecnicamente a escrita antes da aprovação, é necessário usar um ambiente de planeamento apenas de leitura ou integrar esse controlo com as ferramentas da plataforma. A instalação dos agentes, por si só, não oferece essa garantia.
+
 O Team Leader responde em linguagem natural, no seu idioma, com a recomendação ou resultado, a explicação relevante e as perguntas ou próximos passos. Os relatórios JSON dos especialistas são comunicação interna; o Team Leader sintetiza as conclusões validadas. Só apresenta um formato estruturado ao utilizador quando este o pede explicitamente.
 
 As instruções geradas para a conversa principal omitem os esquemas de campos JSON internos. Esses contratos continuam nos perfis delegados e nas referências canónicas, para os relatórios dos especialistas.

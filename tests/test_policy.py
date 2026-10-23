@@ -78,6 +78,40 @@ class PolicyTests(unittest.TestCase):
         value["EVIDENCE"] = []
         self.assertIn("Completed report requires EVIDENCE", validate_report(value))
 
+    def test_delegation_rejects_missing_or_malformed_context(self):
+        value = {field: [] for field in TASK_FIELDS}
+        value.update(TASK_ID="T1", OBJECTIVE="Compare architecture", ACCEPTANCE_CRITERIA=["Explain tradeoffs"],
+                     EXPECTED_OUTPUT="Evidence-backed proposal")
+        for context in (None, False, 42, {}, [], "", "   "):
+            with self.subTest(context=context):
+                value["CONTEXT"] = context
+                self.assertIn("CONTEXT must be nonempty text or a nonempty object", validate_task(value))
+        for context in ("Known product brief", {"brief": "Known product brief"}):
+            value["CONTEXT"] = context
+            self.assertEqual(validate_task(value), [])
+
+    def test_blocking_severity_is_case_and_whitespace_insensitive(self):
+        for severity in ("HIGH", "high", " High ", "critical", "blocker"):
+            with self.subTest(severity=severity):
+                value = report()
+                value["FINDINGS"] = [{"severity": severity, "resolved": False}]
+                result = quality_gate(value)
+                self.assertFalse(result["passed"])
+                self.assertIn("Unresolved blocking finding", result["blockers"])
+        value["FINDINGS"][0]["resolved"] = True
+        self.assertTrue(quality_gate(value)["passed"])
+
+    def test_malformed_or_unknown_severity_fails_closed(self):
+        for severity in (None, [], {}, 1, "", "unknown"):
+            with self.subTest(severity=severity):
+                value = report()
+                value["FINDINGS"] = [{"severity": severity, "resolved": True}]
+                self.assertFalse(quality_gate(value)["passed"])
+                self.assertTrue(any("severity" in error for error in validate_report(value)))
+        for severity in ("medium", "low", "suggestion", "info"):
+            value["FINDINGS"][0] = {"severity": severity}
+            self.assertTrue(quality_gate(value)["passed"])
+
     def test_gate_requires_real_independent_review_at_high_risk(self):
         self.assertFalse(quality_gate(report(), "HIGH")["passed"])
         self.assertTrue(quality_gate(report(), "HIGH", independent_review=True)["passed"])

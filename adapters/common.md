@@ -110,6 +110,9 @@ Objects with detailed evidence or test results belong inside their field's array
 For example, use EVIDENCE: [{"source": "fixture.py:8", "observation": "..."}]
 and TESTS: [{"command": "...", "result": "passed"}], not bare dictionaries.
 A completed report needs at least one EVIDENCE entry. Report unrun checks honestly.
+When a structured finding includes severity, use BLOCKER, CRITICAL, HIGH, MEDIUM,
+LOW, SUGGESTION or INFO. Validation accepts case/whitespace differences but rejects
+unknown or malformed severity values; unresolved BLOCKER/CRITICAL/HIGH blocks acceptance.
 
 Before accepting a specialist result, the Team Leader validates all required field
 types and examines its evidence against acceptance criteria. Reject non-list report

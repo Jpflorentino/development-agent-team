@@ -5,12 +5,20 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from dat.validation import validate
+from dat.validation import doctor, validate
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class ValidationTests(unittest.TestCase):
+    def test_doctor_warns_when_managed_installation_is_absent(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as folder, patch("dat.validation.shutil.which", return_value=None):
+            result = doctor(ROOT, Path(folder))
+        self.assertEqual(result["installations"], [])
+        self.assertIn("No managed agent installation found in this target", result["warnings"])
+        self.assertEqual(result["errors"], [])
+
     def test_repository_structure(self):
         self.assertEqual(validate(ROOT)["errors"], [])
 

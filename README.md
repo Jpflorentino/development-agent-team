@@ -26,6 +26,8 @@ The leader selects only useful specialists for each task. Independent work can r
 
 You continue the conversation with the Team Leader; it coordinates specialist participation. The Python CLI installs and maintains the team's files. The selected AI platform executes the agents through its available capabilities.
 
+Approval phases are instructions to the host model. The installer does not add a pre-tool execution interceptor, and Codex does not automatically call the Python contract helpers before writing files. Hard prevention of writes before approval requires a host-enforced read-only planning session or an execution gate integrated with the host's tools. Installing these agents alone does not provide that guarantee.
+
 The Team Leader answers you conversationally in your language, with a recommendation or outcome, relevant explanation and focused questions or next steps. Specialist JSON reports are an internal exchange; the leader summarizes their validated contents instead of showing the raw protocol. Structured user-facing output is used when you explicitly ask for it.
 
 Generated main-conversation instructions omit the internal JSON field schemas. Those contracts remain in the canonical reference bundle and delegated profiles, where they are needed for specialist returns.

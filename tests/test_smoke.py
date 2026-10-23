@@ -71,3 +71,13 @@ class DiscoveryParserTests(unittest.TestCase):
     def test_claude_error_cannot_be_treated_as_a_conversation(self):
         result = assess_discovery([{"type": "result", "result": "Not logged in", "is_error": True}])
         self.assertEqual(result["status"], "incomplete")
+
+    def test_question_is_optional_for_an_explanatory_followup(self):
+        events = [{"type": "item.completed", "item": {"type": "agent_message", "text": "Continuamos a comparar opções, sem implementar."}},
+                  {"type": "turn.completed"}]
+        self.assertEqual(assess_discovery(events)["status"], "incomplete")
+        result = assess_discovery(events, require_question=False)
+        self.assertEqual(result["status"], "passed")
+        self.assertFalse(result["asks_discovery_questions"])
+        events[0]["item"]["text"] = '{"STATUS": "completed"}'
+        self.assertEqual(assess_discovery(events, require_question=False)["status"], "incomplete")

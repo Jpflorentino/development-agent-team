@@ -155,3 +155,7 @@ python3 scripts/native_phase_smoke.py --execute --timeout 240
 ```
 
 Review the emitted checklist and actual native tool/dispatch/completion events. Successful automatic format/hash checks alone do not prove phase semantics, approval enforcement, independent consultation or correct current cost advice.
+
+## Functioning audit — 23 October 2026
+
+The [agent audit](agent-audit.md) records five findings, four corrected local defects and one remaining host-enforcement limitation. **85 tests passed**, structural validation returned no errors, and the four user-facing phases completed in one synthetic Codex session after resuming an account-limited deployment turn. Architecture delegation start/completion was observed. No accepted independent DevOps result was obtained; the leader disclosed its sequential fallback. All synthetic project file hashes remained unchanged. The test now accepts explanatory follow-ups without requiring a question mark. These observations do not prove behavior for every role/platform or mechanically enforce approvals.

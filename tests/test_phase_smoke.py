@@ -53,6 +53,20 @@ class PhaseSmokeTests(unittest.TestCase):
         self.assertEqual(result["status"], "incomplete")
         self.assertEqual(len(calls), 1)
 
+    def test_explanation_without_question_does_not_abort_audit(self):
+        count = 0
+        def explain(*args):
+            nonlocal count
+            count += 1
+            code, stdout, stderr = reply()
+            if count == 2:
+                stdout = stdout.replace("Aprova?", "Continuamos em discussão, sem implementar.")
+            return code, stdout, stderr
+        code, result, calls = self.run_fixture(explain)
+        self.assertEqual(code, 0)
+        self.assertEqual(len(calls), 4)
+        self.assertFalse(result["turns"][1]["format_check"]["asks_discovery_questions"])
+
     def test_project_mutation_stops_conversation(self):
         def mutate(command, prompt, folder, timeout):
             (folder / "unexpected.txt").write_text("Unexpected application change")

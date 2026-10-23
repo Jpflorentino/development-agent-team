@@ -107,3 +107,5 @@ python3 scripts/dat.py validate
 ```
 
 `doctor` diagnoses the environment and installation; `validate` checks framework structure and adapters. Neither command proves model behavior, successful native delegation or end-to-end task quality.
+
+If the selected target has no managed installation, `doctor` reports a warning rather than presenting that absence as a verified installation. An intact manifest establishes file integrity, not native execution or approval enforcement.

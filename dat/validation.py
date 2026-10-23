@@ -109,6 +109,8 @@ def doctor(source: Path, target: Path):
     installations = []
     try:
         installations = inspect(target)
+        if not installations:
+            warnings.append("No managed agent installation found in this target")
         if any(item["modified_or_missing"] for item in installations):
             errors.append("Managed files changed or missing; inspect modified_or_missing")
         if safe_path(target, ".ai-team/.dat/lock").exists():

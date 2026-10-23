@@ -35,6 +35,7 @@ REPORT_FIELDS = (
     "STATUS", "SUMMARY", "FINDINGS", "CHANGES", "EVIDENCE", "TESTS", "RISKS",
     "DECISIONS", "QUESTIONS", "CONTEXT_UPDATES",
 )
+SEVERITIES = frozenset({"BLOCKER", "CRITICAL", "HIGH", "MEDIUM", "LOW", "SUGGESTION", "INFO"})
 GATES = {
     "LOW": ("acceptance", "scope", "localized_validation", "relevant_tests"),
     "MEDIUM": ("code_review", "functional_validation"),
@@ -110,6 +111,11 @@ def validate_task(task):
     for key in ("TASK_ID", "OBJECTIVE", "EXPECTED_OUTPUT"):
         if key in task and (not isinstance(task[key], str) or not task[key].strip()):
             errors.append(f"{key} must be nonempty text")
+    if "CONTEXT" in task:
+        context = task["CONTEXT"]
+        if not ((isinstance(context, str) and context.strip()) or
+                (isinstance(context, Mapping) and context)):
+            errors.append("CONTEXT must be nonempty text or a nonempty object")
     for key in ("CONSTRAINTS", "FILES", "ACCEPTANCE_CRITERIA", "PERMISSIONS", "DEPENDENCIES"):
         if key in task and (not isinstance(task[key], list) or any(not isinstance(x, str) for x in task[key])):
             errors.append(f"{key} must be a list of strings")
@@ -130,6 +136,12 @@ def validate_report(report):
     for key in REPORT_FIELDS[2:]:
         if key in report and not isinstance(report[key], list):
             errors.append(f"{key} must be a list")
+    findings = report.get("FINDINGS", [])
+    for index, finding in enumerate(findings if isinstance(findings, list) else []):
+        if isinstance(finding, Mapping) and "severity" in finding:
+            severity = finding["severity"]
+            if not isinstance(severity, str) or severity.strip().upper() not in SEVERITIES:
+                errors.append(f"FINDINGS[{index}].severity must be a recognized severity string")
     if report.get("STATUS") == "completed" and not report.get("EVIDENCE"):
         errors.append("Completed report requires EVIDENCE")
     return errors
@@ -150,7 +162,8 @@ def quality_gate(report, risk="LOW", independent_review=False):
     if report.get("STATUS") != "completed":
         blockers.append("Specialist task is not completed")
     for finding in report.get("FINDINGS", []) if isinstance(report.get("FINDINGS"), list) else []:
-        if isinstance(finding, Mapping) and finding.get("severity") in ("BLOCKER", "HIGH", "CRITICAL") and finding.get("resolved") is not True:
+        severity = finding.get("severity") if isinstance(finding, Mapping) else None
+        if isinstance(severity, str) and severity.strip().upper() in ("BLOCKER", "HIGH", "CRITICAL") and finding.get("resolved") is not True:
             blockers.append("Unresolved blocking finding")
     results = report.get("GATE_RESULTS", {})
     if not isinstance(results, Mapping):
