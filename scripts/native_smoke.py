@@ -19,12 +19,12 @@ if sys.version_info < (3, 11):
     raise SystemExit("Python 3.11+ required")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from dat.installer import maintain
-from dat.memory import init
+from dat.memory import init, filename
 from dat.smoke import assess_codex, assess_discovery
 
 PROMPT = """This is an explicitly authorized read-only native-agent smoke test on synthetic data.
 Act as Team Leader. Do not edit files, invoke external services, commit, or install tools.
-Read .ai-team/context.md and fixture.py, then use the actual native delegation tool
+Read agents/<project>-context.md and fixture.py, then use the actual native delegation tool
 exactly once to invoke the installed dat-code-review-engineer custom agent.
 Pass the fixture's actual source and a full delegation envelope to the reviewer,
 because that agent deliberately lacks shell access. Ask for one consequential bug
@@ -39,7 +39,7 @@ Do not ask for follow-up or perform any remediation.
 
 ROLE_PROMPT = """This is an explicitly authorized read-only native-agent smoke test on synthetic data.
 Act as Team Leader. Do not edit files, invoke external services, commit, or install tools.
-Read .ai-team/context.md and fixture.py. If your native delegation tool can select
+Read agents/<project>-context.md and fixture.py. If your native delegation tool can select
 dat-code-review-engineer, use it. If it cannot select named profiles, read
 .ai-team/framework/codex/agents/code-review-engineer.md and pass that COMPLETE
 canonical role instruction plus the COMPLETE actual source and context marker to
@@ -108,7 +108,7 @@ def main():
     init(folder)
     if args.scenario == "review":
         (folder / "fixture.py").write_text("def average(values):\n    return sum(values) / len(values)\n", encoding="utf-8")
-        with (folder / ".ai-team/context.md").open("a", encoding="utf-8") as stream:
+        with (folder / filename(target=folder)).open("a", encoding="utf-8") as stream:
             stream.write("\n- VERIFIED synthetic smoke marker: DAT_CONTEXT_1_0_0\n")
     before = snapshot(folder)
     if binary == "codex":
@@ -122,6 +122,7 @@ def main():
         prompt = (PLANNING_PROMPT if args.scenario == "planning" else DISCOVERY_PROMPT
                   if args.scenario == "discovery" else ROLE_PROMPT
                   if args.dispatch == "role-envelope" else PROMPT)
+        prompt = prompt.replace("agents/<project>-context.md", filename(target=folder))
         process = subprocess.Popen(command, cwd=folder, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, text=True, encoding="utf-8", start_new_session=os.name != "nt")
         try:

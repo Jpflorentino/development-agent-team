@@ -76,6 +76,8 @@ class StorageMemoryTests(unittest.TestCase):
         before = memory.show(self.root)
         memory.add(self.root, "DECISIONS", "Keep PostgreSQL", "APPROVED", expected_hash=before["hash"])
         self.assertIn("Keep PostgreSQL", memory.show(self.root)["text"])
+        # Private legacy archives are preserved/readable, not created for new brains.
+        (self.root / memory.filename(local=True)).write_bytes(memory.initial(local=True))
         self.assertNotIn("Keep PostgreSQL", memory.show(self.root, local=True)["text"])
         memory.add(self.root, "CURRENT_STATE", "Local test fixture", local=True)
         self.assertNotIn("Local test fixture", memory.show(self.root)["text"])
@@ -89,11 +91,13 @@ class StorageMemoryTests(unittest.TestCase):
         memory.add(self.root, "DECISIONS", "Keep contracts", "APPROVED")
         with self.assertRaises(Conflict):
             memory.add(self.root, "DECISIONS", "Replace contracts", "PROPOSED", expected_hash=old)
+        with self.assertRaises(Conflict):
+            memory.add(self.root, "DECISIONS", "Replace contracts", "PROPOSED", expected_hash="")
 
     def test_compaction_preserves_decisions_and_removes_only_duplicates(self):
         memory.init(self.root)
         memory.add(self.root, "DECISIONS", "Keep contracts", "APPROVED")
-        file = self.root / memory.filename()
+        file = self.root / memory.filename(target=self.root)
         raw = file.read_text(encoding="utf-8")
         entry = next(line for line in raw.splitlines() if line.startswith("- ["))
         file.write_text(raw.replace(entry, entry + "\n" + entry))
@@ -104,12 +108,14 @@ class StorageMemoryTests(unittest.TestCase):
     def test_stale_detection_never_deletes(self):
         memory.init(self.root)
         memory.add(self.root, "KNOWN_ISSUES", "Revalidate fixture behavior")
-        file = self.root / memory.filename()
+        file = self.root / memory.filename(target=self.root)
         raw = file.read_text(encoding="utf-8")
         import re
         file.write_text(re.sub(r"\d{4}-\d{2}-\d{2}", "2020-01-01", raw))
         before = file.read_bytes()
-        self.assertTrue(memory.stale(self.root, days=30))
+        result = memory.stale(self.root, days=30)
+        self.assertTrue(result)
+        self.assertTrue(all(item["file"] == memory.filename(target=self.root) for item in result))
         self.assertEqual(file.read_bytes(), before)
 
     def test_secrets_and_multiline_injection_rejected(self):
@@ -123,10 +129,12 @@ class StorageMemoryTests(unittest.TestCase):
         root = self.root / "new"
         memory.init(root, dry_run=True)
         self.assertFalse(root.exists())
-        memory.init(root, share_context=True)
+        with self.assertRaisesRegex(ValueError, "local-only"):
+            memory.init(root, share_context=True)
+        memory.init(root)
         ignores = (root / ".gitignore").read_text(encoding="utf-8")
         self.assertIn("/.ai-team/context.local.md", ignores)
-        self.assertNotIn("/.ai-team/context.md\n", ignores)
+        self.assertIn("/agents/*-context.md", ignores)
 
     def test_path_traversal_and_git_metadata_rejected(self):
         for name in ("../outside", ".git/config", "/absolute"):

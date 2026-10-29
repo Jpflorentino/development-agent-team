@@ -71,7 +71,7 @@ def validate(root: Path):
                 checks.append(f"render:{platform}:{scope}")
         for name in ("README.md", "LICENSE", "docs/architecture.md", "docs/orchestration.md", "docs/agents.md",
                      "docs/security.md", "docs/compatibility.md", "docs/installation.md", "docs/context-management.md",
-                     "docs/contributing.md", "docs/platform-sources.md", "docs/pt-PT/README.md",
+                     "docs/task-management.md", "docs/contributing.md", "docs/platform-sources.md", "docs/pt-PT/README.md",
                      "templates/project-context.md", "templates/project-context.local.md"):
             if not (root / name).is_file():
                 errors.append(f"Missing required document: {name}")
@@ -106,9 +106,13 @@ def doctor(source: Path, target: Path):
         else:
             runtimes[binary] = {"available": False}
             warnings.append(f"Optional runtime missing: {binary}")
-    installations = []
+    installations, publication = [], None
     try:
         installations = inspect(target)
+        from .privacy import inspect_git
+        publication = inspect_git(target)
+        if publication["tracked_private_files"]:
+            errors.append("Agent/context files already tracked; ignore rules cannot unpublish them")
         if not installations:
             warnings.append("No managed agent installation found in this target")
         if any(item["modified_or_missing"] for item in installations):
@@ -135,6 +139,7 @@ def doctor(source: Path, target: Path):
     errors.extend(framework["errors"])
     return {"kind": "local_diagnostic", "python": sys.version.split()[0], "target": str(target),
             "target_writable": writable, "runtimes": runtimes, "installations": installations,
+            "publication_privacy": publication,
             "warnings": warnings, "errors": errors, "adapters": framework["checks"],
             "authentication": "NOT_CHECKED; version detection does not prove authentication",
             "native_execution": "NOT_TESTED_BY_THIS_COMMAND"}

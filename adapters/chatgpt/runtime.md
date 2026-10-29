@@ -11,3 +11,10 @@ and task contract explicitly. The local Codex TOML custom-profile mechanism is
 documented separately and must not be assumed for ordinary ChatGPT Projects.
 Without real independent delegation, report independent review as BLOCKED and
 request human or another session's review for changes that require that gate.
+
+Read the current project's agents/<project>-context.md plus the relevant
+agents/contexts/<role>-context.md technical context. Perform pending first-use
+analysis before application changes; verify host integrations and obtain explicit
+consent before any plugin/MCP installation. Keep consumer copies private. An uploaded file is a snapshot, not a live local file. Without authorized
+filesystem access, return the proposed updated document and state it was not saved;
+the user must replace the snapshot. Never claim automatic background synchronization.

@@ -40,15 +40,16 @@ class InstallationTests(unittest.TestCase):
         self.assertTrue(preview["changed"])
         self.assertFalse(self.target.exists())
 
-    def test_existing_instruction_and_gitignore_restored_byte_for_byte(self):
+    def test_existing_instructions_preserved_and_privacy_rules_survive_uninstall(self):
         self.target.mkdir()
         originals = {"AGENTS.md": b"Existing instructions without newline", ".gitignore": b"bin/\r\n"}
         for name, content in originals.items():
             (self.target / name).write_bytes(content)
         self.install()
         self.install(action="uninstall")
-        for name, content in originals.items():
-            self.assertEqual((self.target / name).read_bytes(), content)
+        self.assertEqual((self.target / "AGENTS.md").read_bytes(), originals["AGENTS.md"])
+        self.assertTrue((self.target / ".gitignore").read_bytes().startswith(originals[".gitignore"]))
+        self.assertIn("/agents/contexts/", (self.target / ".gitignore").read_text())
 
     def test_customizations_outside_block_survive_update_and_remove(self):
         self.install()
@@ -110,19 +111,15 @@ class InstallationTests(unittest.TestCase):
         self.assertEqual(len(inspect(self.target)), 2)
         self.assertTrue(all(not item["modified_or_missing"] for item in inspect(self.target)))
 
-    def test_private_and_sharing_options(self):
+    def test_private_policy_rejects_sharing_options(self):
         self.install()
-        ignored = (self.target / ".gitignore").read_text(encoding="utf-8")
-        self.assertIn("/.codex/agents/dat-team-leader.toml", ignored)
-        self.assertIn("context.md", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
-        self.install(action="update", share_agents=True, share_context=True)
-        ignored = (self.target / ".gitignore").read_text(encoding="utf-8")
-        self.assertNotIn("/.codex/agents/", ignored)
-        self.assertNotIn("/.ai-team/context.md\n", ignored)
-        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
-        self.assertIn("/.ai-team/context.local.md", ignored)
+        before = (self.target / ".gitignore").read_bytes()
+        for options in ({"share_agents": True}, {"share_context": True}):
+            with self.assertRaisesRegex(ValueError, "local-only"):
+                self.install(action="update", **options)
+        self.assertEqual((self.target / ".gitignore").read_bytes(), before)
         self.install(action="update")
-        self.assertEqual((self.target / ".gitignore").read_text(encoding="utf-8"), ignored)
+        self.assertIn("/.codex/agents/", (self.target / ".gitignore").read_text())
 
     def test_uninstall_preserves_memory_and_unrelated_files(self):
         self.install()
@@ -144,7 +141,7 @@ class InstallationTests(unittest.TestCase):
         result = self.install()
         self.assertFalse(any(Path(name).name in {"plan.md", "progress.md", "task.json"} for name in result["changed"]))
 
-    def test_git_privacy_survives_uninstall_and_sharing_is_project_wide(self):
+    def test_git_privacy_survives_multiplatform_update_and_uninstall(self):
         import shutil, subprocess
         if not shutil.which("git"):
             self.skipTest("Git not installed")
@@ -156,12 +153,12 @@ class InstallationTests(unittest.TestCase):
         def ignored(name):
             return subprocess.run(["git", "-C", str(self.target), "check-ignore", "-q", name]).returncode == 0
         self.assertTrue(ignored(".ai-team/context.md"))
-        self.install(action="update", share_context=True)
-        self.assertFalse(ignored(".ai-team/context.md"))
+        self.install(action="update")
+        self.assertTrue(ignored(".ai-team/context.md"))
         memory.init(self.target)
-        self.assertFalse(ignored(".ai-team/context.md"))
+        self.assertTrue(ignored(".ai-team/context.md"))
         self.install("claude-code")
-        self.assertFalse(ignored(".ai-team/context.md"))
+        self.assertTrue(ignored(".ai-team/context.md"))
         self.install(action="uninstall")
         self.install("claude-code", action="uninstall")
         self.assertTrue(ignored(".ai-team/context.local.md"))
@@ -178,12 +175,17 @@ class InstallationTests(unittest.TestCase):
         for path in (".ai-team/context.local.md", ".ai-team/context.md", ".ai-team/.dat/private"):
             self.assertEqual(subprocess.run(["git", "-C", str(self.target), "check-ignore", "-q", path]).returncode, 0)
 
-    def test_memory_share_option_updates_existing_install_choice(self):
+    def test_legacy_sharing_flags_are_replaced_by_private_policy(self):
         self.install()
-        from dat import memory
-        memory.init(self.target, share_context=True)
+        path = self.target / state_path("codex", "project")
+        state = json.loads(path.read_text())
+        state.update(share_agents=True, share_context=True)
+        path.write_text(json.dumps(state))
         self.install(action="update")
-        self.assertNotIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
+        state = json.loads(path.read_text())
+        self.assertFalse(state["share_agents"])
+        self.assertFalse(state["share_context"])
+        self.assertIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text())
 
     @unittest.skipIf(__import__("os").name == "nt", "Windows symlink creation can require privileges")
     def test_symlink_target_is_rejected(self):

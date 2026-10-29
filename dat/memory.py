@@ -1,4 +1,4 @@
-"""Leader-owned hybrid Markdown context with optimistic concurrency checks."""
+"""Leader-owned central project knowledge with optimistic concurrency checks."""
 from __future__ import annotations
 
 import re
@@ -6,10 +6,12 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from .installer import block, privacy_ignore, split_block
+from .context import LEGACY_PRIVATE, LEGACY_SHARED, POINTER, resolve
 from .storage import Conflict, digest, locked, read, transaction
 
 SECTIONS = ("PROJECT", "TECH_STACK", "ARCHITECTURE", "COMPONENTS", "CONVENTIONS", "CONSTRAINTS",
-            "DECISIONS", "CURRENT_STATE", "KNOWN_ISSUES", "REFERENCES")
+            "REQUIREMENTS", "WORKFLOWS", "DATA_MODEL", "INTEGRATIONS", "SECURITY_PRIVACY",
+            "DEPLOYMENT_COSTS", "DECISIONS", "CURRENT_STATE", "KNOWN_ISSUES", "RECOVERY", "REFERENCES")
 STATUSES = ("VERIFIED", "INFERRED", "PROPOSED", "APPROVED", "IMPLEMENTED", "TESTED", "BLOCKED")
 SECRET_PATTERNS = (
     r"-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----",
@@ -24,24 +26,50 @@ def check_text(text: str):
         raise Conflict("Possible credential detected; remove it before saving context. Detection is heuristic, not a privacy guarantee.")
 
 
-def filename(local=False):
-    return ".ai-team/context.local.md" if local else ".ai-team/context.md"
+def filename(local=False, target=None):
+    # The no-target form remains a legacy path helper for existing integrations.
+    return LEGACY_PRIVATE if local else resolve(Path(target)) if target is not None else LEGACY_SHARED
 
 
-def initial(local=False):
-    title = "Private local project context" if local else "Shareable project context"
+def initial(local=False, project=None):
+    title = "Private legacy project context" if local else f"{project or 'Project'} — agent context"
     return (f"# {title}\n\nNo secrets, personal data, transcripts, or duplicated source code.\n"
-            "The Team Leader consolidates updates; verify against code and tests.\n\n" +
+            "The Team Leader maintains shared facts here. Read this and your own agents/contexts/<role>-context.md first; inspect relevant source to verify facts.\n"
+            "Bootstrap required: fill unknown sections from inspected evidence, never invented facts.\n\n" +
             "\n".join(f"## {section}\n" for section in SECTIONS)).encode()
 
 
-def init(target: Path, share_context=False, dry_run=False):
+def prepare(target: Path, context_file=None):
+    """Plan memory creation/migration inside the caller's transaction and lock."""
+    path = resolve(target, context_file)
+    changes = {POINTER: (path + "\n").encode()}
+    if read(target, path) is None:
+        legacy = read(target, LEGACY_SHARED)
+        if legacy is not None:
+            check_text(legacy.decode("utf-8"))
+        value = legacy if legacy is not None else initial(project=target.name)
+        if legacy is not None:
+            text = value.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+            text = text.rstrip("\n") + "\n"
+            value = text.encode("utf-8")
+            missing = [section for section in SECTIONS if f"## {section}\n" not in text]
+            if missing:
+                value = value.rstrip() + b"\n\n" + "\n".join(f"## {section}\n" for section in missing).encode()
+        changes[path] = value
+    from .onboarding import prepare as prepare_roles
+    changes.update(prepare_roles(target, path))
+    return path, changes
+
+
+def init(target: Path, share_context=False, dry_run=False, context_file=None):
     from contextlib import nullcontext
+    from .installer import central_privacy
+    if share_context:
+        raise ValueError("Consumer agent contexts are local-only; --share-context is no longer supported")
+    from .privacy import require_untracked
+    require_untracked(target)
     with nullcontext() if dry_run else locked(target):
-        changes = {}
-        for local in (False, True):
-            if read(target, filename(local)) is None:
-                changes[filename(local)] = initial(local)
+        path, changes = prepare(target, context_file)
         current = read(target, ".gitignore") or b""
         prefix, managed, suffix = split_block(current, "memory", ".gitignore")
         ignored = "/.ai-team/.dat/\n/.ai-team/context.local.md\n"
@@ -49,14 +77,21 @@ def init(target: Path, share_context=False, dry_run=False):
         changes[".gitignore"] = prefix + sep + block("memory", ".gitignore", ignored) + suffix
         privacy_path, privacy_value = privacy_ignore(target, share_context)
         changes[privacy_path] = privacy_value
+        privacy_path, privacy_value = central_privacy(target, path, share_context)
+        changes[privacy_path] = privacy_value
+        from .installer import root_privacy
+        value = root_privacy(changes[".gitignore"])
+        changes = {".gitignore": value, **{p: v for p, v in changes.items() if p != ".gitignore"}}
         return transaction(target, changes, dry_run)
 
 
 def show(target: Path, local=False):
-    raw = read(target, filename(local))
+    path = filename(local, target)
+    raw = read(target, path)
     if raw is None:
-        raise Conflict("Context missing; run memory init (or install) first.")
-    return {"file": filename(local), "hash": digest(raw), "text": raw.decode("utf-8"),
+        raise Conflict("Context missing; run memory init (or install) first. --local accesses retained legacy private context only.")
+    text = raw.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return {"file": path, "hash": digest(raw), "text": text.rstrip("\n") + "\n",
             "estimated_tokens": (len(raw) + 3) // 4}
 
 
@@ -68,7 +103,7 @@ def add(target: Path, section: str, text: str, status="VERIFIED", local=False, e
     check_text(text)
     with locked(target):
         state = show(target, local)
-        if expected_hash and state["hash"] != expected_hash:
+        if expected_hash is not None and state["hash"] != expected_hash:
             raise Conflict("Context changed since it was read; reload and consolidate before retrying.")
         heading = f"## {section}\n"
         if state["text"].count(heading) != 1:
@@ -81,7 +116,11 @@ def add(target: Path, section: str, text: str, status="VERIFIED", local=False, e
         if entry.strip() in existing.splitlines():
             return []
         value = state["text"][:stop].rstrip() + "\n" + entry + "\n" + state["text"][stop:].lstrip("\n")
-        return transaction(target, {filename(local): value.encode()})
+        stamp = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        value = re.sub(r"^Last updated \(UTC\): .*\n", "", value, flags=re.M)
+        title, _, rest = value.partition("\n")
+        value = title + f"\n\nLast updated (UTC): {stamp}\n\n" + rest.lstrip("\n")
+        return transaction(target, {filename(local, target): value.encode()})
 
 
 def compact(target: Path, local=False):
@@ -98,7 +137,7 @@ def compact(target: Path, local=False):
                 seen.add(line)
             output.append(line)
         value = ("\n".join(output).rstrip() + "\n").encode()
-        return transaction(target, {filename(local): value})
+        return transaction(target, {filename(local, target): value})
 
 
 def stale(target: Path, days=30):
@@ -107,10 +146,12 @@ def stale(target: Path, days=30):
     result = []
     today = datetime.now(timezone.utc).date()
     for local in (False, True):
+        if local and read(target, LEGACY_PRIVATE) is None:
+            continue
         state = show(target, local)
         for number, line in enumerate(state["text"].splitlines(), 1):
             match = re.match(r"- \[(\d{4}-\d{2}-\d{2}) (\w+)\]", line)
             if match and (today - date.fromisoformat(match[1])).days >= days:
-                result.append({"file": filename(local), "line": number, "status": match[2],
+                result.append({"file": filename(local, target), "line": number, "status": match[2],
                                "reason": "Age threshold; revalidate against code, not automatically obsolete"})
     return result

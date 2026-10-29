@@ -36,7 +36,7 @@ python3 scripts/dat.py install --platform github-copilot --scope project --targe
 python3 scripts/dat.py install --platform github-copilot --scope project --target /path/to/project
 ```
 
-Inspect the custom `.agent.md` profiles and select Team Leader using the agent interface supported by your Copilot product. CLI, IDE and cloud agent capabilities differ. Verify delegation on the actual surface; do not infer it from profile availability. Cloud agents can only discover repository files present in the revision they use. Sharing or committing profiles requires authorization; an ignored local installation is not a cloud installation.
+Inspect the custom `.agent.md` profiles and select Team Leader using the agent interface supported by your Copilot product. CLI, IDE and cloud agent capabilities differ. Verify delegation on the actual surface; do not infer it from profile availability. Cloud agents can only discover repository files present in the revision they use. Installed profiles remain private and excluded from consumer Git publication. A cloud surface needing versioned profiles is incompatible with that private local installation; do not force-add them.
 
 ## ChatGPT
 
@@ -44,7 +44,7 @@ Inspect the custom `.agent.md` profiles and select Team Leader using the agent i
 python3 scripts/dat.py install --platform chatgpt --scope project --target /path/to/project
 ```
 
-This creates a local export, not an authenticated ChatGPT installation. Open a ChatGPT Project, manually add the exported instruction text and attach the specialist/reference files that the target surface supports. Review what is shared before upload. Ask ChatGPT to act as Team Leader and consult each relevant specialist sequentially if native delegation is unavailable. These are role passes in one conversation, not ten independent agents. Independent review must come from a separate reviewer or runtime when required.
+This creates a local export, not an authenticated ChatGPT installation. Open a ChatGPT Project, manually add the exported instruction text and attach the specialist/reference files that the target surface supports. Review what is shared before upload. The installed instructions activate Team Leader; describe the objective normally. It consults relevant specialists sequentially if native delegation is unavailable. Attach the shared and relevant role contexts as reviewed snapshots. These are role passes in one conversation, not ten independent agents. Independent review must come from a separate reviewer or runtime when required.
 
 Global ChatGPT scope is rejected because no global filesystem installation mechanism has been verified. The project export does not configure every ChatGPT conversation, establish a connection, upload files or create a Custom GPT. Connected tools, file access and executable development capabilities depend on the actual account and surface.
 
@@ -66,9 +66,11 @@ Replace the platform as needed. Omit `--target` only when you intend to use the 
 
 Each supported installation also includes a platform specific canonical reference bundle in `.ai-team/framework/`. Native profile IDs have the prefix `dat-`; for example, `dat-team-leader`.
 
-## Sharing, conflicts and recovery
+## Privacy, conflicts and recovery
 
-Installations default to local use with managed ignore rules. `--share-agents` and `--share-context` opt into sharing eligible files; review the diff and authorize any commit separately. Private context remains private. Consumer memory is initialized separately:
+Consumer profiles and all context/metadata stay private with persistent managed ignore rules. `--share-agents` and `--share-context` are rejected, including prior opt-ins on upgrade. Project install/update and memory initialization stop before private writes if Git already tracks protected artifacts; ignore rules cannot remove indexed or historical remote data. Review any untracking/history remedy separately; the installer does not change the index or rewrite history. The framework source repository may still version its canonical role definitions.
+
+Installation creates the shared `agents/<project>-context.md`, ten `agents/contexts/<role>-context.md` templates and pending onboarding metadata. Normal context edits are outside adapter ownership hashes and survive updates. Legacy files are preserved. On first execution in an existing application, the leader analyzes sources, writes actual technical context and reports useful host integrations before application implementation. It asks for explicit scoped consent before plugin/MCP installation. See [onboarding](onboarding.md). The optional offline scan detects selected provider configuration filenames and JavaScript dependency prefixes; the agents supplement this limited inventory with actual project analysis. Global profiles leave memory to each project. Explicit initialization is idempotent:
 
 ```sh
 python3 scripts/dat.py memory init --target /path/to/project
@@ -95,7 +97,7 @@ python3 scripts/dat.py uninstall --platform codex --scope project --target /path
 python3 scripts/dat.py uninstall --platform codex --scope project --target /path/to/project
 ```
 
-Update reads the framework version in the current checkout. It does not fetch a newer release from the internet. Obtain the desired reviewed framework revision first. Uninstall removes only managed content and preserves context. Changed managed files are conflicts requiring deliberate resolution, not permission to overwrite them.
+Update reads the framework version in the current checkout. It does not fetch a newer release from the internet. Obtain the desired reviewed framework revision first. Uninstall removes only managed adapter content and preserves shared and role contexts, onboarding/path metadata and privacy rules. Changed managed files are conflicts requiring deliberate resolution, not permission to overwrite them.
 
 Uninstall also retains recovery journals and `.ai-team/.gitignore` privacy rules.
 It removes adapter ignore blocks from the root `.gitignore`, while retained local
@@ -109,3 +111,8 @@ python3 scripts/dat.py validate
 `doctor` diagnoses the environment and installation; `validate` checks framework structure and adapters. Neither command proves model behavior, successful native delegation or end-to-end task quality.
 
 If the selected target has no managed installation, `doctor` reports a warning rather than presenting that absence as a verified installation. An intact manifest establishes file integrity, not native execution or approval enforcement.
+
+
+## Optional task manager
+
+The installed bundle includes task-manager instructions; it does not connect Notion or another account. Name the provider and exact project board/database in the host conversation. The leader discovers existing tools/permissions, follows supported installation consent for missing connectors, fetches the schema and records the authorized scope locally. Scoped ongoing task updates reuse that grant. See [task management](task-management.md).

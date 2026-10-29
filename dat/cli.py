@@ -26,8 +26,9 @@ def parser():
         sub.add_argument("--target", type=Path)
         sub.add_argument("--dry-run", action="store_true")
         if action != "uninstall":
-            sub.add_argument("--share-agents", action="store_true")
-            sub.add_argument("--share-context", action="store_true")
+            sub.add_argument("--context-file", help="Select agents/<project>-context.md when multiple contexts exist")
+            sub.add_argument("--share-agents", action="store_true", help="Rejected: consumer agent artifacts are private-only")
+            sub.add_argument("--share-context", action="store_true", help="Rejected: consumer context is private-only")
     sub = commands.add_parser("validate")
     sub.add_argument("--source", type=Path, default=ROOT)
     sub = commands.add_parser("doctor")
@@ -49,7 +50,8 @@ def parser():
         if action in ("show", "add", "compact"):
             sub.add_argument("--local", action="store_true")
         if action == "init":
-            sub.add_argument("--share-context", action="store_true")
+            sub.add_argument("--context-file")
+            sub.add_argument("--share-context", action="store_true", help="Rejected: consumer context is private-only")
             sub.add_argument("--dry-run", action="store_true")
         if action == "add":
             sub.add_argument("--section", choices=memory.SECTIONS, required=True)
@@ -58,14 +60,34 @@ def parser():
             sub.add_argument("--expected-hash")
         if action == "stale":
             sub.add_argument("--days", type=int, default=30)
+    onboarding = commands.add_parser("onboard", help="Initial-analysis evidence helpers; no model/plugin installation").add_subparsers(dest="onboard_command", required=True)
+    for action in ("scan", "status", "record"):
+        sub = onboarding.add_parser(action)
+        sub.add_argument("--target", type=Path, default=Path.cwd())
+        if action == "record":
+            from .context import ROLES
+            sub.add_argument("--role", choices=ROLES, required=True)
+            sub.add_argument("--status", choices=("completed", "not_applicable", "blocked"), required=True)
+            sub.add_argument("--summary", required=True)
+            sub.add_argument("--sources", nargs="*", default=[])
     return cli
 
 
 def run(args):
+    if args.command == "onboard":
+        from . import onboarding
+        target = args.target.absolute()
+        if args.onboard_command == "scan":
+            from .discovery import scan
+            return scan(target)
+        if args.onboard_command == "status":
+            return onboarding.status(target)
+        return {"changed": onboarding.record(target, args.role, args.status, args.summary, args.sources)}
     if args.command in ("install", "update", "uninstall"):
         target = args.target or (Path.home() if args.scope == "global" else Path.cwd())
         return maintain(ROOT, target.absolute(), args.platform, args.scope, args.command, args.dry_run,
-                        getattr(args, "share_agents", False), getattr(args, "share_context", False))
+                        getattr(args, "share_agents", False), getattr(args, "share_context", False),
+                        getattr(args, "context_file", None))
     if args.command == "validate":
         return validate(args.source)
     if args.command == "doctor":
@@ -77,7 +99,7 @@ def run(args):
     if args.command == "memory":
         target = args.target.absolute()
         if args.memory_command == "init":
-            return {"changed": memory.init(target, args.share_context, args.dry_run)}
+            return {"changed": memory.init(target, args.share_context, args.dry_run, args.context_file)}
         if args.memory_command == "show":
             return memory.show(target, args.local)
         if args.memory_command == "add":

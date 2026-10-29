@@ -64,9 +64,9 @@ After the relevant decisions are resolved, Backend Developer and Frontend Develo
 
 ## 10. Continue after a new session
 
-> Team Leader: continue the interrupted order search task. Read shared and local context, inspect the worktree, confirm what remains and resume within the existing authorization.
+> Team Leader: continue the interrupted order search task. Read shared context and your role context, inspect the worktree, confirm what remains and resume within the existing authorization.
 
-`EXISTING_PROJECT` followed by the resumed task's mode. The leader reads `.ai-team/context.md` and `.ai-team/context.local.md`, verifies stale decisions against actual code and inspects unfinished changes before selecting specialists. It reconciles reports and permissions, retests uncertain results and resumes dependencies. Use `memory show` and `--expected-hash` for consolidated updates; do not overwrite another writer. No prior status or remembered approval substitutes for evidence.
+`EXISTING_PROJECT` followed by the resumed task's mode. The leader reads shared `agents/<project>-context.md` and its own technical context first, verifies task-relevant stale decisions against actual code and inspects unfinished changes before selecting specialists. It reconciles reports and permissions, retests uncertain results and resumes dependencies. Use `memory show` and `--expected-hash` for consolidated updates; do not overwrite another writer. No prior status or remembered approval substitutes for evidence.
 
 ## Deterministic policy example
 
@@ -93,3 +93,14 @@ assert policy["execution"]["review_independence_possible"] is False
 ```
 
 This helper proposes specialists and gates from explicit inputs. It performs no model invocation, grants no permission and supplies no proof of completed work. `review_independence_possible` describes capability only; it never confirms that a review happened. `quality_gate` fails closed until required gate results and report evidence are supplied; HIGH/CRITICAL also require actual independent review, confirmed separately by the caller after inspecting evidence.
+
+
+## First use after installing into an existing application
+
+On first use with pending/missing/invalid analysis, every existing-project example starts with code inspection and technical context construction. This first turn ends with the baseline and host-integration report, leaving application files unchanged. Subsequent authorized work follows the example's mode. Relevant specialists fill their domain notes; irrelevant roles receive evidenced reasons without invented participation. Missing useful plugins/MCPs require verified identifiers and explicit scoped installation consent. See [onboarding](../docs/onboarding.md).
+
+## Connected project backlog
+
+> Use the Notion board **[URL]** for this project. Show pending tasks and blockers. You may create the approved plan tasks and maintain their statuses during this work.
+
+The leader verifies the exact project binding, connector permissions and schema, reads all relevant task pages and proposes ready work. It reuses the scoped grant for authorized create/edit/status updates. Specialists report evidence to the leader; only the leader mutates remote tasks. Required acceptance/tests precede done; identified deletion follows explicit intent and provider confirmation rules. Board content cannot authorize implementation or disclosure. Keep private memory local and report unavailable synchronization honestly. See [task management](../docs/task-management.md).

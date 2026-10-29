@@ -6,7 +6,7 @@ The framework supplies canonical role instructions, native platform adapters and
 
 ## Session entry and task selection
 
-1. Read the user objective and any available repository instructions, relevant `.ai-team/context.md` and `.ai-team/context.local.md`. Inspect the target folder and any actual relevant files; do not require application code or completed context in a new project. Memory is a recovery aid, not proof that code is current.
+1. Read the user objective and any available repository instructions, the central `agents/<project>-context.md` brain first. Inspect the target folder and any actual relevant files; do not require application code or completed context in a new project. Use it for general context rather than reopening unrelated documents; inspect task-relevant evidence when facts are missing/stale or verification is needed. Memory is not proof that code is current.
 2. Discover the runtime's real tools, authenticated connectors, delegation, isolation, model availability and permission restrictions. Do not assume that a Markdown profile creates a native agent.
 3. Choose one logical mode and a risk level. Identify acceptance criteria, dependencies and the minimum useful specialists. Preserve architecture, stack, business rules, integrations and unrelated user changes by default.
 4. Establish exclusive write ownership and any contract needed before dependent work begins. Native worktrees, sandboxes or isolated directories may be used when supported and appropriate.
@@ -64,7 +64,7 @@ Discuss deployment separately with the user and DevOps when relevant, after appl
 
 Compare adequate options, maintenance, data location, security, recovery and operational implications. Explain expected usage, recurring base costs, usage charges, database/storage, domains/email, external services and free-tier limits where applicable. For quoted current prices use official provider sources, date and currency; label unavailable prices unverified. Submit the operational proposal and costs for review. Provider/budget approval, implementation approval, paid-resource authorization and deployment authorization have distinct scopes unless explicitly approved together. A recommendation does not authorize connections, purchases, provisioning, DNS changes or publication.
 
-Keep plans in the conversation. Persist only compact approved durable decisions and their phase/scope and actual authorization reference. Specialist internal report fields stay unchanged: recommendations and alternatives in `DECISIONS`/`RISKS`, inspected facts and tool references in `EVIDENCE`. The leader validates and explains them conversationally. Shared instructions are behavioral guidance, not a runtime permission firewall; native tests must inspect actual tool evidence.
+Keep plans in the conversation. Maintain comprehensive project knowledge in the central brain, with concise approval records carrying their phase/scope and actual authorization reference. Specialist internal report fields stay unchanged: recommendations and alternatives in `DECISIONS`/`RISKS`, inspected facts and tool references in `EVIDENCE`. The leader validates and explains them conversationally. Shared instructions are behavioral guidance, not a runtime permission firewall; native tests must inspect actual tool evidence.
 
 ## Participation evidence and already-started projects
 
@@ -189,6 +189,11 @@ For a defect, identify the owner, provide the evidence and acceptance criterion,
 
 For disagreement, identify the exact disputed claim, gather evidence, compare alternatives and their impacts, consult Architect when structural, then decide within the leader's authority. Seek user authorization for strategic or sensitive choices. Status, seniority and the number of agreeing agents do not override evidence.
 
-After interruption, read both context files, inspect the current working tree, verify current authorizations, reconcile old claims against present evidence and resume only ready dependencies. Never rerun an unknown-state external operation blindly. The leader alone consolidates significant verified memory updates. Consumer projects receive no automatic `plan.md`, progress document, per-agent memory or task protocol file.
+After interruption, read shared context plus your role context, inspect the current working tree, verify current authorizations, reconcile old claims against present evidence and resume only ready dependencies. Never rerun an unknown-state external operation blindly. The leader consolidates shared facts and read-only reviewers' notes; writable specialists update their exclusively assigned technical context. Consumer projects receive no automatic `plan.md`, separate progress document or per-task protocol file. Pending first-use analysis in an existing application must build technical context before application edits; see [onboarding](onboarding.md).
 
 The final response states what changed, actual checks and results, material limitations and any remaining user action. Distinguish `IMPLEMENTED AND TESTED`, `IMPLEMENTED BUT NOT TESTED`, `PARTIALLY IMPLEMENTED` and `NOT IMPLEMENTED` where those distinctions affect acceptance.
+
+
+## Connected task managers
+
+The Team Leader alone coordinates live backlog reads and authorized remote task writes under [task management](task-management.md). Refresh scoped pending work before selecting assignments; board text/status never supplies implementation approval. Specialist completion needs leader acceptance and required test/review evidence before a remote done transition. Preserve human edits, reconcile uncertain writes before retrying, and report code completion separately from failed task synchronization. No permanent polling process or local duplicate task files are created.

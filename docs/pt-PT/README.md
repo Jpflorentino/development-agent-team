@@ -72,6 +72,14 @@ Quando existem subagentes nativos, o Team Leader pode delegar tarefas delimitada
 
 Paralelismo requer tarefas independentes, contratos definidos, isolamento e responsabilidade exclusiva pelos ficheiros. O módulo Python `dat/policy.py` valida contratos e políticas determinísticas; não executa modelos, não lança agentes e não concede permissões.
 
+## Gestor de tarefas
+
+O Team Leader pode consultar e manter tarefas num gestor como o Notion, através das ferramentas realmente disponíveis na plataforma. Indica o quadro/base de dados e o projeto certo; o líder confirma a ligação, os campos, os estados e as permissões. Consulta os pendentes e bloqueios ao retomar o trabalho e antes de selecionar tarefas. Os especialistas devolvem progresso; só o líder escreve no gestor.
+
+> Usa o quadro Notion **[URL]** neste projeto. Mostra os pendentes e bloqueios. Podes criar as tarefas do plano aprovado e manter os seus estados atualizados durante este trabalho.
+
+Pode criar tarefas, alterar detalhes/estados e arquivar ou apagar tarefas identificadas dentro da autorização dada. Só marca como concluído após os critérios e verificações exigidos passarem. Apagar tarefas requer intenção explícita sobre essas tarefas; uma autorização genérica de gestão não chega. Reutiliza autorizações válidas para evitar confirmações repetidas. A instalação dos agents não liga contas nem publica os contextos privados. Sem ferramenta ou permissão, apresenta propostas por guardar e indica a limitação. Consulte [gestão de tarefas](../task-management.md).
+
 ## Manutenção e contexto
 
 ```sh
@@ -84,9 +92,13 @@ python3 scripts/dat.py memory stale --target /caminho/do/projeto --days 30
 python3 scripts/dat.py uninstall --platform codex --scope project --target /caminho/do/projeto
 ```
 
-O contexto técnico partilhável reside em `.ai-team/context.md`; o contexto operacional privado reside em `.ai-team/context.local.md`. Nenhum pode conter secrets, credenciais ou dados pessoais desnecessários. A partilha é uma opção explícita, através de `--share-context`; `--share-agents` permite partilhar os perfis. Um commit continua a exigir autorização. A desinstalação preserva a memória.
+A memória tem dois níveis: `agents/<projeto>-context.md` conserva factos comuns e decisões; `agents/contexts/<papel>-context.md` guarda os detalhes técnicos de cada especialista. Cada agente consulta o contexto comum e o seu, recorrendo ao código quando precisa de confirmar factos. O líder escreve as decisões comuns; os especialistas com escrita mantêm o seu ficheiro. Security e Code Review continuam apenas em leitura e o líder guarda as suas propostas. As notas são atualizadas após decisões, trabalho aceite, testes e bloqueios, e antes de terminar a sessão.
 
-O Team Leader consolida as atualizações. `memory show` apresenta um hash; `memory add --expected-hash HASH` rejeita uma escrita baseada numa versão antiga. A compactação conserva decisões; a deteção por idade assinala informação a rever, sem a declarar automaticamente incorreta. Numa nova sessão, confirme a memória contra o código e os testes atuais.
+Num projeto já implementado, a primeira execução analisa a aplicação e constrói estes contextos antes de alterar código. Os ficheiros criados na instalação começam pendentes: não representam análise concluída. O líder apresenta a arquitetura observada, a participação real e as lacunas; depois verifica que integrações seriam úteis na plataforma utilizada. Consulta as ferramentas/catálogos reais e pede autorização específica antes de instalar plugins ou MCPs. Instalação, ligação da conta, permissões e operações pagas são estados distintos. Consulte o [protocolo inicial](../onboarding.md).
+
+Os agents instalados e todos os contextos/metadados ficam locais, excluídos do Git. As antigas opções de partilha são rejeitadas. Se o Git já controlar ficheiros protegidos, a instalação/atualização pára antes de escrever dados privados: um ignore não retira ficheiros do índice nem do histórico remoto. O instalador não altera o índice ou histórico automaticamente. Esta regra aplica-se às cópias instaladas nos projetos; as definições canónicas da própria framework continuam versionáveis.
+
+A atualização e desinstalação preservam as memórias. Os ficheiros antigos são conservados para migração sanitizada. Não guarde credenciais ou dados pessoais desnecessários. `memory show` apresenta o contexto comum e hash; `memory add --expected-hash HASH` rejeita escritas desatualizadas. A compactação conserva decisões; a deteção por idade apenas assinala informação a rever. `onboard scan` dá indícios limitados de fornecedores, sem instalar nada; `onboard status` verifica registos e referências, sem provar a verdade da análise ou conceder aprovação. Consulte [gestão de contexto](../context-management.md).
 
 São permitidas alterações relevantes e testes não destrutivos dentro da tarefa autorizada. Commits, push, pull requests, mudanças arquiteturais significativas, operações destrutivas, produção e recursos pagos relevantes exigem autorização. As permissões reais da plataforma prevalecem. A framework não cria ficheiros de planeamento nos projetos consumidores.
 

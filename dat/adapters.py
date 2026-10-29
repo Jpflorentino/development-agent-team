@@ -87,7 +87,7 @@ def _bundle(root: Path, agents: list[dict], platform: str) -> dict[str, str]:
     files = {f".ai-team/framework/{platform}/agents/catalog.json": _read(root, "agents/catalog.json")}
     for agent in agents:
         files[f".ai-team/framework/{platform}/{agent['definition']}"] = _read(root, agent["definition"])
-    for name in ("orchestration", "security", "context-management"):
+    for name in ("orchestration", "security", "context-management", "onboarding", "task-management"):
         relative = f"docs/{name}.md"
         if (root / relative).is_file():
             files[f".ai-team/framework/{platform}/{relative}"] = _read(root, relative)
@@ -111,6 +111,16 @@ def _instructions(root: Path, agents: list[dict], common: str) -> str:
     return (
         "# Development Agent Team\n\n"
         "Act as the Team Leader in the main conversation for coordinated engineering work. "
+        "Read shared agents/<project>-context.md and your own technical context first. "
+        "FIRST-USE CHECK: inspect .ai-team/.dat/onboarding.json before application edits. "
+        "If analysis is missing/pending/invalid, this entire turn is analysis and memory writes ONLY, "
+        "even for a one-line fix. Defer the requested code change; end the turn with the baseline "
+        "report and verified integration proposals. Do not complete onboarding and implement in "
+        "the same turn. A normal feature/fix request does not waive first-use analysis. "
+        "Fill actual notes under each relevant context's existing domain headings, with sources "
+        "and timestamps; blank headings plus a generic summary do not complete analysis. "
+        "For every not_applicable role, replace its pending file with the reason, sources and timestamp too. "
+        "Ask before any plugin/MCP installation. Keep all agent artifacts private. "
         "Reply to the user in natural language. Internal specialist JSON/report schemas "
         "are for delegated returns, not the main conversation. Synthesize the relevant "
         "findings and questions; use machine-readable output only if the user requests it. "
@@ -128,7 +138,7 @@ def _instructions(root: Path, agents: list[dict], common: str) -> str:
     )
 
 
-def render(root: Path, platform: str, scope: str) -> dict[str, str]:
+def render(root: Path, platform: str, scope: str, *, context_file=None) -> dict[str, str]:
     """Return installable file text for a documented platform and installation scope.
 
     ChatGPT project output is a manual import bundle, not a native installation.
@@ -159,7 +169,7 @@ def render(root: Path, platform: str, scope: str) -> dict[str, str]:
                 "\n\n# Bundled operating references\n\n" + "\n\n---\n\n".join(protocols)
             )
         files[f"{prefix}/SETUP.md"] = _read(root, "adapters/chatgpt/SETUP.md")
-        return files
+        return _context_location(files, context_file)
     if platform == "claude-code":
         directory = ".claude/agents"
         instruction_path = "CLAUDE.md" if scope == "project" else ".claude/CLAUDE.md"
@@ -193,4 +203,16 @@ def render(root: Path, platform: str, scope: str) -> dict[str, str]:
                 raise ValueError(f"Copilot profile exceeds documented 30,000 character limit: {agent['id']}")
             files[f"{directory}/dat-{agent['id']}.agent.md"] = front + "---\n\n" + body
     files[instruction_path] = instructions
-    return files
+    return _context_location(files, context_file)
+
+
+def _context_location(files, context_file):
+    if context_file is None:
+        return files
+    from .context import PLACEHOLDER, validate_path
+    validate_path(Path("/render-root"), context_file)
+    result = {path: text.replace(PLACEHOLDER, context_file) for path, text in files.items()}
+    for path, text in result.items():
+        if path.endswith(".agent.md") and len(text.split("---\n", 2)[-1]) > 30000:
+            raise ValueError(f"Copilot profile exceeds documented 30,000 character limit after context substitution: {path}")
+    return result

@@ -1,6 +1,6 @@
 # Private local project context
 
-Template for `.ai-team/context.local.md`. Keep excluded from Git and review before any upload. Private does not mean a secret store: never save passwords, API keys, tokens, credentials, private keys or unnecessary personal data. Store compact operational recovery facts only. The Team Leader consolidates proposals and verifies them against the current worktree, environment and permissions.
+Legacy archive template for `.ai-team/context.local.md`; new installations use shared `agents/<project>-context.md` memory plus role-specific files in `agents/contexts/`. Keep excluded from Git and review before any upload. Private does not mean a secret store: never save passwords, API keys, tokens, credentials, private keys or unnecessary personal data. Store compact operational recovery facts only. The Team Leader consolidates proposals and verifies them against the current worktree, environment and permissions.
 
 Use the same section keys as shared context so maintenance tooling can inspect both consistently. Keep durable shareable facts in shared context instead of duplicating them here. Empty sections are permitted. Use dated evidence labels (`VERIFIED`, `INFERRED`, `PROPOSED`, `APPROVED`, `IMPLEMENTED`, `TESTED`, `BLOCKED`) honestly.
 

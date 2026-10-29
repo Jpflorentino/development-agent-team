@@ -11,8 +11,9 @@ Version **1.0.0** · Python **3.11+** · MIT License. [Documentação em portugu
 - **Start a project from scratch:** turn an initial idea into a clarified scope, propose a suitable stack and architecture, then coordinate implementation after the necessary decisions are resolved.
 - **Develop an existing application:** implement features, fix bugs and work on frontend, backend or database changes while respecting established conventions.
 - **Review and validate work:** coordinate code review, relevant tests, architecture assessments and authorized security analysis, with evidence and stated limitations.
+- **Manage project tasks:** the Team Leader reads live pending work and maintains authorized tasks/statuses through an available Notion or other tracker connection. See [task management](docs/task-management.md).
 - **Prepare delivery:** organize build, infrastructure and deployment work within the permissions and approvals granted.
-- **Continue across sessions:** retain approved decisions, constraints and relevant project state in shared and private local context.
+- **Continue across sessions:** retain shared project facts and technical context per specialist, updated at meaningful milestones.
 
 The leader selects only useful specialists for each task. Independent work can run in parallel when the host supports it and ownership/isolation are established. When native delegation is unavailable, the workflow uses explicitly labelled sequential role passes; these do not provide independent review.
 
@@ -22,7 +23,7 @@ The leader selects only useful specialists for each task. Independent work can r
 2. **Discuss architecture.** The Team Leader clarifies material gaps, consults Software Architect on undecided architecture/technologies and explains options in your language. Review, revise and approve those choices.
 3. **Review tasks and implement.** Based on the approved architecture, the leader proposes tasks per agent, deliverables, dependencies and checks. After execution approval, it coordinates implementation, review and tests. Prior approvals or explicit autonomous authorization are reused within their scope.
 4. **Discuss deployment and costs.** When relevant, discuss options and costs with the leader and DevOps. Architecture approval alone does not approve implementation, paid resources or deployment.
-5. **Keep context and report.** The leader records compact approved decisions and explains actual results and limitations.
+5. **Keep context and report.** The leader maintains shared memory; specialists maintain their assigned technical context. It explains actual results and limitations.
 
 You continue the conversation with the Team Leader; it coordinates specialist participation. The Python CLI installs and maintains the team's files. The selected AI platform executes the agents through its available capabilities.
 
@@ -94,7 +95,7 @@ An empty application folder is expected in this mode. Installation files such as
 
 ### Work on an existing project
 
-Describe the feature, bug or review you need, for example:
+On first use, the leader builds the project baseline and technical contexts, reports existing architecture and reviews useful plugins/MCPs for the actual host. It requests authorization for verified missing integrations; none are installed automatically. Later authorized work uses that memory. Describe the feature, bug or review you need, for example:
 
 > Fix the validation error when a customer submits **[describe the problem and how to reproduce it]**. The expected result is **[describe the behavior]**.
 
@@ -104,7 +105,17 @@ The framework responds in the user's language by default. [Documentação em por
 
 Within an authorized task, agents may inspect code, make scoped changes, run nondestructive checks and create a development branch. Consumer project commits, pushes, pull requests, significant architectural changes, production deployments, destructive actions and material paid resources require authorization. Host sandbox and approval mechanisms remain authoritative. No planning or progress files are generated in consumer projects.
 
-Shared technical context belongs in `.ai-team/context.md`; local operational context belongs in `.ai-team/context.local.md`. Neither file may contain secrets. Files remain local unless sharing is explicitly chosen. Memory commands support initialization, additions, compacting and stale context checks; see [context management](docs/context-management.md).
+Shared facts live in `agents/<project>-context.md`; each role also reads its own `agents/contexts/<role>-context.md`. The leader owns shared decisions and coordination; writable specialists own their technical notes, while read-only reviewers propose notes for the leader to save. A first execution in an existing application analyzes and fills these files before application changes, then checks useful host integrations and requests scoped installation consent. Installation only creates pending templates. See [context management](docs/context-management.md) and [first-use onboarding](docs/onboarding.md).
+
+Installed consumer agents, context and metadata are private local files with persistent Git exclusions. Sharing flags are rejected. Already tracked protected files block project installation/update: ignore rules cannot unpublish them, and the installer does not alter Git history or the index. Canonical definitions in this framework repository remain versionable.
+
+## Use a task manager
+
+Tell the leader which manager and exact project board/database to use. It verifies the connector, schema and permissions, then reads pending tasks before choosing work. With scoped authorization it can create tasks, edit details/statuses and archive or delete identified tasks. Specialists report progress to the leader; they do not write to the board independently. Existing architecture, execution and provider approvals still apply.
+
+> Use the Notion board **[URL]** for this project. Show pending tasks and blockers. You may create the approved plan tasks and keep their statuses updated during this work.
+
+A generic permission to manage tasks does not authorize deleting arbitrary tasks. No installation connects an account automatically or uploads private agent/context files. See the [provider-neutral workflow and Notion guidance](docs/task-management.md).
 
 ## Maintenance and validation
 
@@ -119,11 +130,17 @@ Install/update preserve unmanaged files and stop on conflicting managed edits. U
 
 For an opt-in check of a normal new-project conversation, run `python3 scripts/native_smoke.py --platform codex --scenario discovery --execute`. This uses the configured account and quota with a fictional brief in a temporary read-only project. It checks that the leader returns a conversational answer with discovery questions, rather than the internal JSON report, and leaves project files unchanged. It does not establish the quality of every recommendation or validate a booking integration.
 
+`python3 scripts/native_memory_smoke.py --execute --timeout 180` tests automatic central-brain maintenance in a temporary synthetic writable project. The user prompt requests only a small code change; the test checks that prior knowledge is retained and the new behavior and refreshed timestamp are recorded without a memory reminder. It uses account quota and never edits the consumer application.
+
 After updating canonical instructions in this checkout, use `update` for each existing project installation and start a new conversation so it can load the updated instructions. Installed copies do not change automatically when this framework's source files change.
 
 `python3 scripts/native_phase_smoke.py --execute --timeout 240` exercises four messages in the same Codex session: a natural brief, an informational architecture question, architecture-only approval and a later deployment/cost discussion. It uses a synthetic project and emits a manual review checklist. Verify Portuguese responses, real Architect/DevOps participation, scoped approvals, proposed tasks and absence of implementation. Automatic checks cover completed responses, conversational format, questions and file hashes only; a read-only sandbox does not prove voluntary enforcement or future behavior.
 
 [`dat/policy.py`](dat/policy.py) supplies deterministic selection and contract/quality-gate helpers for integrations and regression tests. These helpers do not launch models or grant host permissions. Sequential role simulation cannot satisfy an independent-review gate; HIGH/CRITICAL work remains blocked until a genuinely separate review is obtained.
+
+`python3 scripts/native_onboarding_smoke.py --execute --timeout 240` tests first-use analysis in a writable synthetic existing application. It checks that application files remain unchanged and that contexts and evidence are populated; manual transcript review verifies findings and actual participation. No provider installation is exercised.
+
+`python3 scripts/native_task_manager_smoke.py --execute --timeout 240` exercises real Codex tool calls through a temporary local MCP fixture: paginated backlog reads, task creation, status update and targeted trash. This uses account quota but no real Notion workspace.
 
 ## Documentation and examples
 

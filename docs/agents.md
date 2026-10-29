@@ -33,6 +33,9 @@ Every material claim uses evidence and, where useful, the labels `VERIFIED`, `IN
 
 Review findings contain location, description, evidence, impact, severity and suggested correction. Severity is `BLOCKER`, `HIGH`, `MEDIUM`, `LOW` or `SUGGESTION`, with a realistic rationale. QA defects include expected/observed behavior and reproduction steps. Security distinguishes confirmed vulnerabilities from potential risks. Designers disclose whether they produced an actual Figma artifact or an alternative specification.
 
-Specialists propose concise memory changes. Only the leader consolidates `.ai-team/context.md` and `.ai-team/context.local.md`; no per-agent memory, consumer planning file or task protocol document is created. Agents respond in the user's language unless instructed otherwise.
+The leader owns shared facts in `agents/<project>-context.md` and its coordination context. Each writable specialist maintains its assigned `agents/contexts/<role>-context.md`; read-only Security and Code Review propose notes for the leader to save. Roles read shared facts plus their own technical context and verify relevant sources. Refresh notes at meaningful milestones and handoff/session end. First-use analysis builds these contexts before application changes; see [onboarding](onboarding.md). No separate consumer planning or task protocol documents are created. Agents respond in the user's language unless instructed otherwise.
 
 Native format, registration and capabilities differ by platform. Consult [compatibility](compatibility.md) and each adapter's runtime notes before claiming real delegation, concurrency, read-only enforcement or installation scope.
+
+
+For connected task managers, the Team Leader owns scoped backlog queries and remote create/update/archive/delete operations; specialists propose changes without writing to the board. Current provider permissions, project binding and user authorization govern operations. See [task management](task-management.md).

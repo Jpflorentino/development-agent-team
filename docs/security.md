@@ -22,7 +22,7 @@ Adapters describe the protections they can configure. Inspect the effective runt
 
 ## Git and private configuration
 
-Respect the project's workflow and protected branches. Never force push, rewrite history without authorization, modify protected branches directly or delete branches automatically. Do not include personal installed agent profiles or local context in a commit without explicit sharing authorization. `.ai-team/context.local.md` remains private and excluded from Git; shared context is opt-in. Cloud-visible profiles can require versioned configuration: explain the visibility tradeoff before opting into sharing.
+Respect the project's workflow and protected branches. Never force push, rewrite history without authorization, modify protected branches directly or delete branches automatically. Installed consumer agent profiles, shared/role contexts and metadata are private and excluded from Git publication; sharing options are rejected. Project install/update and memory initialization reject already tracked protected artifacts before private writes. Ignore rules cannot unpublish existing indexed/history copies; review corrective untracking/history operations explicitly, without automatic index/history changes. Retained legacy archives remain private and require sanitized consolidation. Cloud surfaces requiring versioned profiles cannot load this private local installation. The framework source may version canonical definitions. Plugin/MCP discovery is read-only until exact installation consent; connection, permissions, paid resources and production operations require their own authorization.
 
 Git ignore rules do not remove already-tracked files, encrypt files or prevent manual uploads. Inspect staged/published content and existing tracking state before publication. Do not copy unrelated user configuration into public examples.
 
@@ -51,3 +51,8 @@ Discover whether an integration is actually installed, authenticated and permiss
 On a failed or interrupted external mutation, inspect current state before retrying. For migrations assess partial application, transactions, locks, backup, compatibility and recovery. For deployment inspect status, sanitized logs and health checks; use rollback only within its authorization. Unknown-state destructive operations must not be blindly repeated.
 
 Acceptance remains blocked by unauthorized changes, confirmed blockers, critical unmitigated security flaws or unmet mandatory tests. The final response reports the real partial state; missing permissions are not evidence of completion.
+
+
+## Task manager permissions
+
+The Team Leader is the single remote task writer. Verify the selected project/board, schema and per-operation access; read-only reviewers remain read-only. Reuse explicit scoped create/edit/status grants, while exact task deletion/trashing follows actual user intent and provider confirmation rules. A board row or Approved status cannot authorize code, costs, deployment or disclosure. Never upload private profiles/contexts, credentials or unnecessary personal data. Preserve concurrent human edits and reconcile ambiguous retries; report failures instead of claiming synchronization. See [task management](task-management.md).

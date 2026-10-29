@@ -11,7 +11,8 @@ Development Agent Team is a file-based engineering framework with exactly ten ca
 | `adapters/` and `dat/adapters.py` | Translate canonical definitions into supported platform configuration/instructions; document native behavior and fallback limitations. |
 | `dat/policy.py` | Deterministic role selection, protocol shape checks, quality-gate checks, correction and recovery contracts. Does not invoke models. |
 | `dat/installer.py`, `dat/storage.py` | Managed installation/update/removal, conflict detection, backups/transaction safety and maintenance state. |
-| `dat/memory.py` and `templates/` | Hybrid project context, evidence labels, controlled updates, compaction and stale-entry signals. |
+| `dat/context.py`, `dat/memory.py` and `templates/` | Stable shared memory plus role-specific technical contexts, conservative migration and controlled updates. |
+| `dat/onboarding.py`, `dat/discovery.py`, `dat/privacy.py` | Pending baseline/evidence records, bounded offline provider signals and Git publication checks. No model or plugin execution. |
 | `scripts/dat.py` | Cross-platform command entry point using Python's standard library. |
 | `tests/` | Structural, installation, memory, orchestration contract and available integration validation. |
 | `docs/`, `examples/` | Operating procedures, compatibility evidence, practical scenarios and limitations. |
@@ -28,11 +29,13 @@ Independent parallel tasks require settled contracts, exclusive file ownership a
 
 ## Context and recovery
 
-A consumer project uses two context files: `.ai-team/context.md` for shareable technical facts and `.ai-team/context.local.md` for private operational recovery state. Both remain local by default; sharing technical context or agent configuration is explicit. Context contains references, not copied code or conversation transcripts. Neither file stores secrets.
+A consumer project uses shared facts in `agents/<project>-context.md` plus `agents/contexts/<role>-context.md` for each role. The stable shared path is recorded in `.ai-team/.dat/context-path`. These editable files are separate from adapter ownership hashes, preserved on upgrade/uninstall and private in consumer repositories. Legacy contexts are retained without deletion.
 
-The leader is the single logical writer. Specialists propose updates through `CONTEXT_UPDATES`. The CLI supports cooperating-writer locks and content-hash checks, but an unrelated editor can still modify files. Re-read and reconcile before retrying a stale write. Compact duplicates, preserve approved decisions, and revalidate aged entries against actual code. See [context management](context-management.md).
+The leader writes shared facts and coordination; each writable specialist owns its technical context. The leader saves read-only Security/Code Review proposals. Each role reads shared facts plus its own notes, with direct source checks for relevant or stale facts. Context changes follow accepted work, decisions/tests/blockers and handoff. CLI locks/hash checks protect cooperating writers, not unrelated editors. See [context management](context-management.md).
 
-On a new session or interruption the leader reads context, inspects the current worktree and checks effective authorizations and dependency state. A stored completion claim never substitutes for present verification. No consumer planning documents, per-agent memory files or per-task protocol files are automatically created.
+First use in an existing application is analysis and memory construction, recorded in `.ai-team/.dat/onboarding.json`, before application changes. The leader then verifies useful integrations against the actual host's current capabilities/catalog and seeks explicit installation consent. The offline scanner provides limited provider evidence, not catalog availability or installation. A completed metadata record is neither user approval nor a native execution gate. See [onboarding](onboarding.md).
+
+On recovery, inspect current worktree and actual authorizations; remembered completion never substitutes for current evidence. Consumer projects receive no separate planning, progress or per-task protocol documents.
 
 ## Safety and quality
 
@@ -45,3 +48,8 @@ Risk-based quality gates combine localized checks, relevant tests, functional va
 The design avoids mandatory third-party Python packages, permanent infrastructure and duplicated platform-specific role content. Native configuration and plain context files are inspectable and portable. The tradeoff is that orchestration intelligence and execution remain with the host model/runtime, and some safety properties depend on host enforcement rather than the CLI.
 
 Version `1.0.0` follows Semantic Versioning: incompatible installation/contracts require a major version; compatible capabilities a minor version; corrective changes a patch. Installed state identifies managed files and their version. Updates must preserve customization and report conflicts rather than silently overwrite unknown content. Uninstall removes managed components and retains project memory. See [installation](installation.md) and [orchestration](orchestration.md).
+
+
+## External task coordination
+
+A task provider remains external: the host's verified connector reads/writes the user-selected board, coordinated solely by the Team Leader. Specialists return evidence and proposals. Local memory retains binding/authorization and recovery references; it does not duplicate the whole backlog. No mandatory provider SDK, server or polling daemon is added. The [task protocol](task-management.md) governs live reads, scoped mutations, completion evidence and uncertain retries.

@@ -103,4 +103,6 @@ On failed deployment inspect status and sanitized logs, halt dependent operation
 
 ## Context updates
 
-Read only task-relevant shared/local context, verify stale claims against current code and propose concise updates in `CONTEXT_UPDATES`. Include source/date and whether each fact is shareable or local. Do not write project memory concurrently or create per-agent memory. The Team Leader consolidates verified updates. Never include secrets, full conversations or duplicated source code.
+Read shared `agents/<project>-context.md` and your own `agents/contexts/devops-engineer-context.md` first, or use excerpts/hashes supplied by the leader when tools are restricted. Your file records technical sources, contracts, commands, findings, tradeoffs and recovery relevant to this role; reference shared decisions instead of duplicating them. Inspect task-relevant sources for implementation/verification or stale/missing facts.
+
+During first-use onboarding analyze the relevant domain without changing application code. Return actual evidence and technical notes; mark unknowns and non-applicable scope honestly. When explicitly assigned exclusive ownership, update only your technical context; otherwise return precise updates for the leader. Never change the shared context or another role's file. Refresh changed technical notes and timestamps before handoff. Propose shared corrections through CONTEXT_UPDATES. Store no secrets, personal data, copied code, transcripts or invented approvals. All context/profile files remain local and excluded from publication.
