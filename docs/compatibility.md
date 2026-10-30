@@ -28,9 +28,9 @@ The matrix describes native platform use. Python unit and contract tests are rec
 | Independent code review | SUPPORTED_NOT_TESTED: separate delegated reviewer | SUPPORTED_AND_TESTED: synthetic static review, supplied role | PARTIALLY_SUPPORTED: requires separate execution | NOT_SUPPORTED by sequential role simulation |
 | Native behavior tests | PARTIALLY_SUPPORTED: loading only; auth blocked | SUPPORTED_AND_TESTED: one supplied-role smoke; see limits | NOT_VERIFIED: runtime absent | NOT_VERIFIED: manual import untested |
 
-Conventional Claude Code subagents do not become Agent Teams merely because ten files exist. This framework does not enable experimental Agent Teams. Standard leader-mediated results are the baseline. Copilot CLI, IDE and cloud agents are different surfaces; a cloud runtime cannot discover local ignored files absent from its revision. This framework keeps installed consumer profiles private; do not commit or force-add them to obtain cloud discovery. Use a supported private local surface.
+Conventional Claude Code subagents do not become Agent Teams merely because role files exist. This framework does not enable experimental Agent Teams. Standard leader-mediated results are the baseline. Copilot CLI, IDE and cloud agents are different surfaces; a cloud runtime cannot discover local ignored files absent from its revision. This framework keeps installed consumer profiles private; do not commit or force-add them to obtain cloud discovery. Use a supported private local surface.
 
-ChatGPT export files must be manually applied using the actual Project's supported instructions and file attachment interface. The framework neither uploads data nor creates ten independent ChatGPT agents. Ordinary ChatGPT Projects do not consume local `.codex/` or `.claude/` profiles. If a particular ChatGPT Work environment exposes real delegation tools, verify it separately; this adapter makes no such claim.
+ChatGPT export files must be manually applied using the actual Project's supported instructions and file attachment interface. The framework neither uploads data nor creates independent ChatGPT agents. Ordinary ChatGPT Projects do not consume local `.codex/` or `.claude/` profiles. If a particular ChatGPT Work environment exposes real delegation tools, verify it separately; this adapter makes no such claim.
 
 Actual client versions, evidence and untested dimensions are recorded in the
 [1.0.0 validation report](validation.md).
@@ -57,3 +57,6 @@ For restricted reviewer delegation, use a separate parent review session with
 host-enforced read-only permissions and audited MCP/tools. A generic child in a
 writable session has only a behavioral no-edit instruction. Verify these behaviors
 in the installed runtime before changing the native capability statuses above.
+
+
+The cleanup/optimization role extends the current catalog to eleven roles. Earlier native loading evidence above covered the original ten; do not infer that the new profile has been invoked by every client. See [existing-code optimization](code-optimization.md) and the dated validation evidence.

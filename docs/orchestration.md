@@ -12,7 +12,7 @@ The framework supplies canonical role instructions, native platform adapters and
 4. Establish exclusive write ownership and any contract needed before dependent work begins. Native worktrees, sandboxes or isolated directories may be used when supported and appropriate.
 5. Delegate ready assignments through native tools or use sequential role passes. Validate the result centrally before accepting it or starting dependent work.
 
-The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX`, `CODE_REVIEW`, `ARCHITECTURE_REVIEW`, `REFACTORING`, `SECURITY_AUDIT`, `DATABASE_OPTIMIZATION`, `DESIGN`, `TESTING`, `DEPLOYMENT` and `MODERNIZATION`.
+The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX`, `CODE_REVIEW`, `CODE_OPTIMIZATION`, `ARCHITECTURE_REVIEW`, `REFACTORING`, `SECURITY_AUDIT`, `DATABASE_OPTIMIZATION`, `DESIGN`, `TESTING`, `DEPLOYMENT` and `MODERNIZATION`.
 
 | Mode | Operational behavior |
 | --- | --- |
@@ -22,6 +22,7 @@ The modes are `NEW_PROJECT`, `EXISTING_PROJECT`, `FEATURE_DEVELOPMENT`, `BUG_FIX
 | BUG_FIX | Reproduce when feasible, trace the cause, correct it and verify the fix plus relevant regressions. |
 | CODE_REVIEW | Read-only review of the actual diff and relevant surrounding code; return evidenced findings without implementing fixes. |
 | ARCHITECTURE_REVIEW | Assess boundaries and tradeoffs read-only; distinguish observed defects, future risks and optional improvements. |
+| CODE_OPTIMIZATION | Read-only review of implemented code for cleanup, simplification and evidenced optimization; existing source required, no diff necessary. |
 | REFACTORING | Preserve observable behavior and public contracts; show a concrete maintenance or correctness benefit. |
 | SECURITY_AUDIT | Read-only scoped analysis; non-destructive checks by default, no automatic remediations. |
 | DATABASE_OPTIMIZATION | Measure relevant query and integrity behavior; assess locks, compatibility and recovery before changes. |
@@ -162,7 +163,7 @@ Use the labels `VERIFIED` (observed evidence), `INFERRED` (reasoned conclusion),
 
 ## Central validation and quality gates
 
-The leader checks requirements, scope, architecture, actual changes, evidence, tests, risks and security. Inspect the diff and relevant outputs rather than accepting the specialist summary alone. Route defects to their responsible implementer. Security and Code Review do not implement their findings automatically.
+The leader checks requirements, scope, architecture, actual changes, evidence, tests, risks and security. Inspect the diff and relevant outputs rather than accepting the specialist summary alone. Route defects to their responsible implementer. Security, Code Review and Code Optimization do not implement their findings automatically.
 
 Gates are cumulative and proportionate:
 
@@ -197,3 +198,8 @@ The final response states what changed, actual checks and results, material limi
 ## Connected task managers
 
 The Team Leader alone coordinates live backlog reads and authorized remote task writes under [task management](task-management.md). Refresh scoped pending work before selecting assignments; board text/status never supplies implementation approval. Specialist completion needs leader acceptance and required test/review evidence before a remote done transition. Preserve human edits, reconcile uncertain writes before retrying, and report code completion separately from failed task synchronization. No permanent polling process or local duplicate task files are created.
+
+
+## Existing-code optimization flow
+
+Select `CODE_OPTIMIZATION` for cleanup/simplification/performance review of implemented code. Assign code-optimization-engineer analysis only; an empty/new project does not qualify. Present justified candidates and validation/measurement requirements; reuse actual scoped execution authorization or obtain it before domain implementers apply refactors. QA/independent Code Review then verify behavior and risk gates. Analysis completion is not implemented cleanup or a measured speedup. See [the full protocol](code-optimization.md).

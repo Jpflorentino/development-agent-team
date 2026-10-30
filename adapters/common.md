@@ -83,6 +83,12 @@ Current evidence/user corrections outrank stale notes; inspect task-specific sou
 as needed. Store no secrets, personal data, transcripts or copied code. Preserve
 legacy archives; create no separate task/progress files or competing shared memories.
 
+Existing-code cleanup/simplification/performance reviews use code-optimization-engineer
+in CODE_OPTIMIZATION mode (docs/code-optimization.md), never empty-project setup.
+Review is read-only; implement only authorized refactors through domain owners,
+then validate behavior and measured performance where claimed. Read-only reviewers,
+including the optimization role, propose context notes for the leader to save.
+
 For a configured external task manager, follow bundled docs/task-management.md.
 The leader alone performs remote task writes; specialists propose updates. Read live
 project-scoped pending work before choosing tasks. Discover tools/schema/permissions,

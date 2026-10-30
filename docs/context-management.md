@@ -1,12 +1,12 @@
 # Shared and specialist project memory
 
-Each project has shared facts in `agents/<project>-context.md`, for example `agents/homemotion-context.md`, plus ten technical files in `agents/contexts/<role>-context.md`. Each role reads the shared file and its own context first; other role files are consulted only when relevant. Shared decisions have one authoritative location; technical details stay with their owner and refer back to those decisions.
+Each project has shared facts in `agents/<project>-context.md`, for example `agents/homemotion-context.md`, plus eleven technical files in `agents/contexts/<role>-context.md`. Each role reads the shared file and its own context first; other role files are consulted only when relevant. Shared decisions have one authoritative location; technical details stay with their owner and refer back to those decisions.
 
 ## Contents, ownership and updates
 
 The shared context covers product goals, requirements, business rules, accepted architecture/stack, cross-domain contracts, integration/deployment/cost decisions, approval scope and references, implementation/test state, issues and recovery. It indexes the technical contexts. The Team Leader is its sole logical writer and owns `agents/contexts/team-leader-context.md`.
 
-Specialist files hold technical paths, boundaries, contracts, conventions, commands/results, risks and recovery for their domain. Their headings are role-specific: Architect records boundaries and technology tradeoffs; Database records schema, invariants and migrations; DevOps records environments, delivery, providers/costs and recovery. Writable specialists own only their assigned technical file. Security and Code Review remain read-only: they propose findings and the leader saves those notes. Serialize writers to the same role file; a shared directory is not isolation.
+Specialist files hold technical paths, boundaries, contracts, conventions, commands/results, risks and recovery for their domain. Their headings are role-specific: Architect records boundaries and technology tradeoffs; Database records schema, invariants and migrations; DevOps records environments, delivery, providers/costs and recovery. Writable specialists own only their assigned technical file. Security, Code Review and Code Optimization remain read-only: they propose findings and the leader saves those notes. Serialize writers to the same role file; a shared directory is not isolation.
 
 Update affected files after user corrections/decisions, accepted work, relevant tests, blockers and phase transitions, and before handoff/session end. Record actual-clock timestamps and source references. Distinguish verified implementation, proposals, documented approval and unknown history. Preserve rationale; organize and deduplicate instead of copying source, full transcripts or secrets. No update is needed just to say nothing changed.
 
@@ -54,3 +54,6 @@ Installed consumer profiles, shared/role context and `.ai-team/` records stay lo
 Project install/update and memory initialization check Git-tracked protected artifacts before writing private data. If any are tracked, resolve the reported conflict through reviewed untracking/history actions; the tool never silently changes the Git index or history. Ignore rules alone cannot unpublish tracked files, remove historical remote copies, prevent force-add/manual uploads or provide encryption. Never store credentials or unnecessary personal data, even in ignored files.
 
 Keep task plans in the conversation and durable decisions/results in memory. Do not create separate per-task protocol or progress documents.
+
+
+The optimization role adds private technical memory at `agents/contexts/code-optimization-engineer-context.md`. Updates migrate existing ten-role onboarding records by preserving prior evidence and adding only this pending domain; see [cleanup and optimization](code-optimization.md#memory-and-upgrades).

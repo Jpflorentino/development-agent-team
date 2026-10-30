@@ -25,11 +25,24 @@ def prepare(target, common):
         path = role_path(role)
         if read(target, path) is None:
             changes[path] = initial_role(role, target.name, common)
-    if read(target, STATE) is None:
+    existing = read(target, STATE)
+    if existing is None:
         state = {"schema": 1, "phase": "pending", "roles": {
             role: {"status": "pending", "summary": "", "sources": []} for role in ROLES},
             "integration_review": {}}
         changes[STATE] = (json.dumps(state, indent=2) + "\n").encode()
+    else:
+        state = json.loads(existing)
+        roles = state.get("roles") if isinstance(state, dict) else None
+        legacy_roles = set(ROLES) - {"code-optimization-engineer"}
+        if not isinstance(state, dict) or state.get("schema") != 1 or not isinstance(roles, dict) or set(roles) not in (legacy_roles, set(ROLES)):
+            raise Conflict("Unsupported onboarding record; preserve and reconcile before upgrading")
+        if set(roles) == legacy_roles:
+            # Add the new domain without rewriting prior notes, participation,
+            # approvals or integration records. A new template is not analysis.
+            roles["code-optimization-engineer"] = {"status": "pending", "summary": "", "sources": []}
+            state["phase"] = "pending"
+            changes[STATE] = (json.dumps(state, indent=2) + "\n").encode()
     return changes
 
 

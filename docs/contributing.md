@@ -1,6 +1,6 @@
 # Contributing
 
-Use Python 3.11+ and the standard library. Keep canonical agent definitions platform neutral; adapter output should derive from them so fixes do not diverge between products. Preserve the ten stable IDs. No runtime server or mandatory external service is needed.
+Use Python 3.11+ and the standard library. Keep canonical agent definitions platform neutral; adapter output should derive from them so fixes do not diverge between products. Preserve existing stable IDs; add new roles consistently to catalog, routing, memory and adapters with migration tests. No runtime server or mandatory external service is needed.
 
 ```sh
 python3 scripts/dat.py validate

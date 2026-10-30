@@ -55,7 +55,7 @@ class AdapterTests(unittest.TestCase):
         for platform in ("claude-code", "codex", "github-copilot"):
             files = render(ROOT, platform, "project")
             profiles = {name: text for name, text in files.items() if "/dat-" in name}
-            self.assertEqual(len(profiles), 10)
+            self.assertEqual(len(profiles), len(self.catalog["agents"]))
             for agent in self.catalog["agents"]:
                 suffix = ".toml" if platform == "codex" else ".agent.md" if platform == "github-copilot" else ".md"
                 profile = next(text for name, text in profiles.items() if name.endswith(f"/dat-{agent['id']}{suffix}"))
@@ -134,7 +134,7 @@ class AdapterTests(unittest.TestCase):
                 self.assertIn("explicitly requests such delegation", files[location])
                 self.assertEqual(files[location].count("## Available specialist profiles"), 1)
         global_copilot = render(ROOT, "github-copilot", "global")
-        self.assertEqual(len([p for p in global_copilot if p.startswith(".copilot/agents/")]), 10)
+        self.assertEqual(len([p for p in global_copilot if p.startswith(".copilot/agents/")]), len(self.catalog["agents"]))
         self.assertFalse(any(p.startswith(".github/") for p in global_copilot))
 
     def test_codex_role_fallback_distinguishes_runtime_profile_and_permissions(self):

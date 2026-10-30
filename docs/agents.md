@@ -1,6 +1,6 @@
 # Agents
 
-The framework defines exactly ten canonical agents. Stable IDs are the keys used by the catalog, routing contracts and adapters. Each definition specifies identity, mission, responsibilities, competencies, authority, activation and non-activation conditions, dependencies, tools, permissions, input/output contracts, communication, quality, completion, errors and context updates.
+The framework defines eleven canonical agents. Stable IDs are the keys used by the catalog, routing contracts and adapters. Each definition specifies identity, mission, responsibilities, competencies, authority, activation and non-activation conditions, dependencies, tools, permissions, input/output contracts, communication, quality, completion, errors and context updates.
 
 | ID and definition | Contribution | Typical activation |
 | --- | --- | --- |
@@ -14,6 +14,7 @@ The framework defines exactly ten canonical agents. Stable IDs are the keys used
 | [security-engineer](../agents/security-engineer.md) | Read-only scoped threat/vulnerability assessment and mitigation verification. | Sensitive boundaries, security change or explicit audit. |
 | [devops-engineer](../agents/devops-engineer.md) | Delivery configuration, infrastructure, monitoring, rollback and authorized deployments. | CI/CD, environment, operational or deployment work. |
 | [code-review-engineer](../agents/code-review-engineer.md) | Read-only independent review of consequential defects in the actual diff and surrounding code. | MEDIUM+ changes and explicit review. |
+| [code-optimization-engineer](../agents/code-optimization-engineer.md) | Read-only assessment of implemented code for cleanup, simpler designs and measured optimization candidates. | Existing-code cleanup/refactor/performance review; never empty-project setup. |
 
 The catalog's specialist dependency on `team-leader` describes coordination, not automatic activation of all agents. Other dependencies are task-specific. For example, Frontend may depend on an accepted Backend contract; Backend may depend on an approved Database migration design. The leader activates those specialists only when needed.
 
@@ -23,7 +24,7 @@ A small text adjustment normally needs only Frontend and localized verification.
 
 All specialists use the exact delegation and return fields in [orchestration](orchestration.md). They send findings and material questions to the leader. The leader validates claims before presenting them to the user and routes corrections to the responsible implementer. During coordinated execution specialists do not establish separate user conversations or approve operations themselves.
 
-Security and Code Review remain read-only. A review does not become independent because the same model used a different heading. Where the runtime cannot provide an independent reviewer, report a sequential review pass honestly and retain unmet HIGH/CRITICAL independent-review gates.
+Security, Code Review and Code Cleanup/Optimization remain read-only. A review does not become independent because the same model used a different heading. Where the runtime cannot provide an independent reviewer, report a sequential review pass honestly and retain unmet HIGH/CRITICAL independent-review gates.
 
 ## Concrete senior engineering behavior
 
@@ -33,9 +34,12 @@ Every material claim uses evidence and, where useful, the labels `VERIFIED`, `IN
 
 Review findings contain location, description, evidence, impact, severity and suggested correction. Severity is `BLOCKER`, `HIGH`, `MEDIUM`, `LOW` or `SUGGESTION`, with a realistic rationale. QA defects include expected/observed behavior and reproduction steps. Security distinguishes confirmed vulnerabilities from potential risks. Designers disclose whether they produced an actual Figma artifact or an alternative specification.
 
-The leader owns shared facts in `agents/<project>-context.md` and its coordination context. Each writable specialist maintains its assigned `agents/contexts/<role>-context.md`; read-only Security and Code Review propose notes for the leader to save. Roles read shared facts plus their own technical context and verify relevant sources. Refresh notes at meaningful milestones and handoff/session end. First-use analysis builds these contexts before application changes; see [onboarding](onboarding.md). No separate consumer planning or task protocol documents are created. Agents respond in the user's language unless instructed otherwise.
+The leader owns shared facts in `agents/<project>-context.md` and its coordination context. Each writable specialist maintains its assigned `agents/contexts/<role>-context.md`; read-only reviewers, including Optimization, propose notes for the leader to save. Roles read shared facts plus their own technical context and verify relevant sources. Refresh notes at meaningful milestones and handoff/session end. First-use analysis builds these contexts before application changes; see [onboarding](onboarding.md). No separate consumer planning or task protocol documents are created. Agents respond in the user's language unless instructed otherwise.
 
 Native format, registration and capabilities differ by platform. Consult [compatibility](compatibility.md) and each adapter's runtime notes before claiming real delegation, concurrency, read-only enforcement or installation scope.
 
 
 For connected task managers, the Team Leader owns scoped backlog queries and remote create/update/archive/delete operations; specialists propose changes without writing to the board. Current provider permissions, project binding and user authorization govern operations. See [task management](task-management.md).
+
+
+Cleanup reviews do not require a new diff. The leader presents scoped recommendations before edits, routes authorized refactors to domain owners and validates original behavior and any measured performance claim. See [existing-code optimization](code-optimization.md).

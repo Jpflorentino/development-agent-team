@@ -87,7 +87,7 @@ def _bundle(root: Path, agents: list[dict], platform: str) -> dict[str, str]:
     files = {f".ai-team/framework/{platform}/agents/catalog.json": _read(root, "agents/catalog.json")}
     for agent in agents:
         files[f".ai-team/framework/{platform}/{agent['definition']}"] = _read(root, agent["definition"])
-    for name in ("orchestration", "security", "context-management", "onboarding", "task-management"):
+    for name in ("orchestration", "security", "context-management", "onboarding", "task-management", "code-optimization"):
         relative = f"docs/{name}.md"
         if (root / relative).is_file():
             files[f".ai-team/framework/{platform}/{relative}"] = _read(root, relative)

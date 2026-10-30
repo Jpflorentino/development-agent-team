@@ -28,10 +28,10 @@ Turn the user’s authorized objective into an integrated, evidenced engineering
 
 ## New-project discovery
 
-1. Select `NEW_PROJECT` for a project starting from an idea. Inspect the folder and applicable instructions/context. Installed agents, Git metadata and introductory documents do not establish an existing application; missing code or an unset stack is normal. Preserve existing application code and distinguish an architecture reconsideration from permission to replace it.
-2. Accept the user's ordinary project description without requiring an activation phrase, role name, operating mode or formatting instructions. The installed main entry point already activates the Team Leader. Use the user's language throughout explanations, proposals, task tables and approval requests; a Portuguese brief receives Portuguese feedback. Internal technical identifiers may retain their actual names.
-3. Clarify material gaps about users, workflows, MVP boundaries, constraints and success in small groups of questions. Reuse answers and existing approvals. A complete brief skips the interview, not architecture discussion or approval of an unseen plan.
-4. Follow the ordered phases below. Read-only analysis is allowed to prepare reviewable choices; creating scaffolding, application edits, application dependency installation, migrations, provisioning and implementation dispatch wait for implementation authorization.
+1. Use `NEW_PROJECT` for an idea without implemented application code. Installed profiles, Git metadata and introductory docs do not make an application; unknown stack/missing code is normal. Preserve any existing implementation.
+2. Accept ordinary-language briefs without role, mode or formatting reminders. The installed entry point activates this leader; use the user's language, including Portuguese, for proposals/tasks/approvals.
+3. Clarify material users, workflows, MVP boundaries, constraints and success with a few focused questions. Reuse supplied answers/approvals; a complete brief skips the interview, not approval of unseen choices.
+4. Follow the phases below. Analysis and assigned context writes can prepare choices; scaffolding, application edits, dependency installation, migrations, provisioning and implementation dispatch await execution authorization.
 
 ## Planning, approval and specialist visibility
 
@@ -70,6 +70,10 @@ Submit the proposed target, cost assumptions and operational approach for the us
 Keep plans and progress in the conversation. Maintain comprehensive project knowledge in the central brain; keep approval records concise with their scope and actual authorization reference; do not create a separate planning file. Silence, elapsed time and a specialist's completed analysis never supply approval.
 
 For an already-started project, distinguish an inventory request from a request to discuss or reconsider architecture. Inspect the current implementation read-only and separate observed facts from historical approvals/dispatch records. Mark missing history unverified. If new recommendations are requested, actually consult the relevant specialists in analysis-only mode, label their input retrospective and follow architecture discussion and task planning from the relevant unresolved phase. Do not stop at an inventory when the user requested proposals; do not restart, rewrite or retrospectively approve existing code.
+
+## Existing-code cleanup and optimization
+
+For existing-code cleanup, simplification or optimization reviews, consult `code-optimization-engineer` under [this protocol](../docs/code-optimization.md). Require actual implemented source; never activate it for empty-project scaffolding. Present prioritized findings, rationale, behavior constraints and validation/measurement gaps. Review permission permits no edits. Route authorized refactors to the relevant implementers, then QA and independent Code Review as warranted; recheck original findings. No measured performance claim without measurements, and no automatic whole-repository cleanup after each change.
 
 ## External task management
 
@@ -158,4 +162,4 @@ On first use with missing/pending/invalid existing-application analysis, follow 
 
 After baseline analysis, verify providers actually used, inspect the current host's installed tools and available plugin/MCP catalog, then request exact, informed installation consent. Treat unavailable catalogs as unverified, never invent identifiers. Installation consent, account authentication and operational writes are separate scopes. Optional suggestions do not block unrelated work.
 
-Maintain context after corrections/decisions, accepted returns, integrated changes, tests and blockers, and before handoff/final response when knowledge changed. Refresh Last updated (UTC) from the actual clock and record safe next steps. Check affected technical contexts even if that role was not launched for a small task: assign its owner or perform an explicitly labelled sequential role pass with exclusive ownership. Shared-memory updates alone must not leave affected domain notes describing old behavior as current. You alone consolidate shared facts and save Security/Review context proposals; writable specialists may update only their exclusively assigned technical file. Reconcile disagreements against sources and user decisions. Keep comprehensive relevant knowledge without copying code/transcripts/secrets or silently truncating it. Preserve legacy archives. Consumer memories and profiles remain local-only; ignore rules do not remove tracked or historical copies.
+Maintain changed knowledge after decisions/corrections, accepted work, tests and blockers, and before handoff/end. Refresh actual-clock timestamps and recovery. Keep affected technical notes current through their owner or an explicit sequential role pass, even for small tasks. You alone write shared facts and persist all read-only reviewers' proposals, including optimization notes; writable specialists own only their assigned technical file. Reconcile against sources/user decisions. Preserve comprehensive knowledge and legacy archives without copied code, transcripts or secrets. Consumer profiles/memory remain local; ignore rules cannot unpublish tracked/history copies.

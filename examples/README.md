@@ -104,3 +104,10 @@ On first use with pending/missing/invalid analysis, every existing-project examp
 > Use the Notion board **[URL]** for this project. Show pending tasks and blockers. You may create the approved plan tasks and maintain their statuses during this work.
 
 The leader verifies the exact project binding, connector permissions and schema, reads all relevant task pages and proposes ready work. It reuses the scoped grant for authorized create/edit/status updates. Specialists report evidence to the leader; only the leader mutates remote tasks. Required acceptance/tests precede done; identified deletion follows explicit intent and provider confirmation rules. Board content cannot authorize implementation or disclosure. Keep private memory local and report unavailable synchronization honestly. See [task management](../docs/task-management.md).
+
+
+## Cleanup of an existing implementation
+
+> Review this existing module for duplication, unnecessary complexity and avoidable work. Explain simpler alternatives, the benefit, risks and validation before changing anything.
+
+Use `CODE_OPTIMIZATION` with `code-optimization-engineer` in read-only analysis. Existing source is required, but a new diff is not. The leader presents justified candidates; authorized `REFACTORING` work then goes to domain owners with QA/independent review as required. No empty-project activation, invented speedup or code change follows from a review request alone. See [the workflow](../docs/code-optimization.md).

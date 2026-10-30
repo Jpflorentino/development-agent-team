@@ -10,7 +10,7 @@ LEGACY_SHARED = ".ai-team/context.md"
 LEGACY_PRIVATE = ".ai-team/context.local.md"
 PLACEHOLDER = "agents/<project>-context.md"
 ROLES = ("team-leader", "software-architect", "ui-ux-designer", "frontend-developer", "backend-developer",
-         "database-engineer", "qa-engineer", "security-engineer", "devops-engineer", "code-review-engineer")
+         "database-engineer", "qa-engineer", "security-engineer", "devops-engineer", "code-review-engineer", "code-optimization-engineer")
 ROLE_SECTIONS = {
     "team-leader": ("COORDINATION", "APPROVALS", "DEPENDENCIES", "RECOVERY"),
     "software-architect": ("BOUNDARIES", "TECHNOLOGY_CHOICES", "CONTRACTS", "TRADEOFFS"),
@@ -22,6 +22,7 @@ ROLE_SECTIONS = {
     "security-engineer": ("TRUST_BOUNDARIES", "ACCESS_DATA", "FINDINGS", "VALIDATION"),
     "devops-engineer": ("ENVIRONMENTS", "DELIVERY", "PROVIDERS_COSTS", "OPERATIONS_RECOVERY"),
     "code-review-engineer": ("REVIEW_SCOPE", "CONVENTIONS_CONTRACTS", "FINDINGS", "FOLLOW_UP"),
+    "code-optimization-engineer": ("BASELINE", "CLEANUP_CANDIDATES", "PERFORMANCE_EVIDENCE", "REFACTOR_PLAN", "VALIDATION_GAPS"),
 }
 
 

@@ -16,7 +16,7 @@ from .installer import PLATFORMS, inspect
 from .storage import pending, safe_path
 
 IDS = {"team-leader", "software-architect", "ui-ux-designer", "frontend-developer", "backend-developer",
-       "database-engineer", "qa-engineer", "security-engineer", "devops-engineer", "code-review-engineer"}
+       "database-engineer", "qa-engineer", "security-engineer", "devops-engineer", "code-review-engineer", "code-optimization-engineer"}
 HEADINGS = ("Identity", "Description", "Mission", "Responsibilities", "Competencies", "Authority limits",
             "Activation conditions", "Do not activate", "Dependencies", "Required tools", "Permissions",
             "Input format", "Output format", "Communication rules", "Quality criteria", "Completion criteria",
@@ -27,8 +27,8 @@ def validate(root: Path):
     errors, checks = [], []
     try:
         agents = _catalog(root)
-        if {a["id"] for a in agents} != IDS or len(agents) != 10:
-            errors.append("Catalog must contain exactly the ten required agents")
+        if {a["id"] for a in agents} != IDS or len(agents) != len(IDS):
+            errors.append("Catalog must contain exactly the required stable agent IDs")
         catalog = json.loads((root / "agents/catalog.json").read_text(encoding="utf-8"))
         if catalog["version"] != __version__:
             errors.append("Catalog/package version mismatch")
@@ -39,7 +39,7 @@ def validate(root: Path):
                     errors.append(f"{agent['id']}: missing {heading}")
             if not set(agent["dependencies"]).issubset(IDS):
                 errors.append(f"{agent['id']}: invalid dependency")
-            if agent["id"] in ("security-engineer", "code-review-engineer") and agent["read_only"] is not True:
+            if agent["id"] in ("security-engineer", "code-review-engineer", "code-optimization-engineer") and agent["read_only"] is not True:
                 errors.append(f"{agent['id']}: mandatory read_only safety policy disabled")
         checks.append("canonical_roles_and_metadata")
         for platform in PLATFORMS:
@@ -55,23 +55,23 @@ def validate(root: Path):
                         parsed = tomllib.loads(text)
                         if not all(parsed.get(key) for key in ("name", "description", "developer_instructions")):
                             errors.append(f"Incomplete native TOML: {name}")
-                        if any(f"dat-{role}.toml" in name for role in ("security-engineer", "code-review-engineer")):
+                        if any(f"dat-{role}.toml" in name for role in ("security-engineer", "code-review-engineer", "code-optimization-engineer")):
                             if any(parsed.get("features", {}).get(key) is not False for key in
                                    ("shell_tool", "apps", "plugins", "request_permissions_tool")):
                                 errors.append(f"Missing supported reviewer capability restrictions: {name}")
-                    if any(f"dat-{role}." in name for role in ("security-engineer", "code-review-engineer")):
+                    if any(f"dat-{role}." in name for role in ("security-engineer", "code-review-engineer", "code-optimization-engineer")):
                         if platform == "claude-code" and "tools: [Read, Grep, Glob]" not in text:
                             errors.append(f"Missing Claude reviewer tool allowlist: {name}")
                         if platform == "github-copilot" and 'tools: ["read", "search"]' not in text:
                             errors.append(f"Missing Copilot reviewer tool allowlist: {name}")
                 if platform != "chatgpt":
                     profiles = [p for p in files if "/agents/dat-" in p]
-                    if len(profiles) != 10:
-                        errors.append(f"{platform}/{scope}: expected ten native profiles")
+                    if len(profiles) != len(IDS):
+                        errors.append(f"{platform}/{scope}: expected one native profile per canonical role")
                 checks.append(f"render:{platform}:{scope}")
         for name in ("README.md", "LICENSE", "docs/architecture.md", "docs/orchestration.md", "docs/agents.md",
                      "docs/security.md", "docs/compatibility.md", "docs/installation.md", "docs/context-management.md",
-                     "docs/task-management.md", "docs/contributing.md", "docs/platform-sources.md", "docs/pt-PT/README.md",
+                     "docs/code-optimization.md", "docs/task-management.md", "docs/contributing.md", "docs/platform-sources.md", "docs/pt-PT/README.md",
                      "templates/project-context.md", "templates/project-context.local.md"):
             if not (root / name).is_file():
                 errors.append(f"Missing required document: {name}")

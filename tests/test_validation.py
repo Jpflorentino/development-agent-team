@@ -44,7 +44,7 @@ class ValidationTests(unittest.TestCase):
             path = source / "agents/catalog.json"
             catalog = json.loads(path.read_text(encoding="utf-8"))
             for agent in catalog["agents"]:
-                if agent["id"] in ("security-engineer", "code-review-engineer"):
+                if agent["id"] in ("security-engineer", "code-review-engineer", "code-optimization-engineer"):
                     agent["read_only"] = False
             path.write_text(json.dumps(catalog))
             errors = validate(source)["errors"]

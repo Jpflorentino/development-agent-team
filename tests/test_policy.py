@@ -45,6 +45,7 @@ class PolicyTests(unittest.TestCase):
 
     def test_review_mode_is_read_only(self):
         for mode, specialist in [("CODE_REVIEW", "code-review-engineer"),
+                                 ("CODE_OPTIMIZATION", "code-optimization-engineer"),
                                  ("ARCHITECTURE_REVIEW", "software-architect"),
                                  ("SECURITY_AUDIT", "security-engineer")]:
             with self.subTest(mode=mode):

@@ -32,7 +32,7 @@
     {
       "id": "frontend-developer",
       "name": "Frontend Developer",
-      "description": "Implements reliable, responsive and accessible user interfaces using the project\u2019s existing stack.",
+      "description": "Implements reliable, responsive and accessible user interfaces using the project’s existing stack.",
       "read_only": false,
       "dependencies": [
         "team-leader"
@@ -98,6 +98,16 @@
         "team-leader"
       ],
       "definition": "agents/code-review-engineer.md"
+    },
+    {
+      "id": "code-optimization-engineer",
+      "name": "Code Cleanup & Optimization Engineer",
+      "description": "Reviews existing implementations for simpler code and evidenced optimizations without changing behavior.",
+      "read_only": true,
+      "dependencies": [
+        "team-leader"
+      ],
+      "definition": "agents/code-optimization-engineer.md"
     }
   ]
 }

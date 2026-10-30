@@ -1,6 +1,6 @@
 ## ChatGPT runtime
 
-This is a manual Project/Custom GPT instruction and reference bundle, not ten
+This is a manual Project/Custom GPT instruction and reference bundle, not independently
 installed native agents. Use the Team Leader instructions and consult the role
 reference for bounded sequential role passes. Label these passes as sequential,
 and never present them as independent review or actual delegated agents.

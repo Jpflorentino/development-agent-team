@@ -30,9 +30,9 @@ class OnboardingTests(unittest.TestCase):
         self.project.mkdir(parents=True, exist_ok=True)
         (self.project / "app.py").write_text("def greeting():\n    return 'Hello'\n")
 
-    def test_ten_private_role_contexts_start_pending(self):
+    def test_all_private_role_contexts_start_pending(self):
         self.install()
-        self.assertEqual(len(list((self.project / "agents/contexts").glob("*-context.md"))), 10)
+        self.assertEqual(len(list((self.project / "agents/contexts").glob("*-context.md"))), len(ROLES))
         state = onboarding.status(self.project)
         self.assertEqual(state["phase"], "pending")
         self.assertFalse(state["contexts_analyzed"])

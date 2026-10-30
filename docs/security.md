@@ -14,7 +14,7 @@ The specification's authorization to publish this framework is distinct from the
 
 ## Role boundaries and technical enforcement
 
-Code Review Engineer and Security Engineer are read-only. Reviewers report findings to the Team Leader; the leader assigns fixes to implementers. UI/UX may use an already-authorized Figma connector but cannot install plugins or authorize new connectors by itself. QA may create synthetic test users only in an authorized test environment and cannot automatically create production accounts.
+Code Review Engineer, Security Engineer and Code Cleanup & Optimization Engineer are read-only. Reviewers report findings to the Team Leader; the leader assigns fixes to implementers. UI/UX may use an already-authorized Figma connector but cannot install plugins or authorize new connectors by itself. QA may create synthetic test users only in an authorized test environment and cannot automatically create production accounts.
 
 Use native read-only modes, restricted tool lists, sandboxing, approval policies, process/worktree isolation and network restrictions wherever the host provides them. A text instruction cannot constrain a broadly permitted shell or connector reliably. Read-only roles should not receive unrestricted shell, file editing or mutating connector tools. A test that writes files, seeds a database or creates accounts is a mutation even when its purpose is validation; execute it only in an authorized isolated environment.
 

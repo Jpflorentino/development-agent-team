@@ -7,7 +7,7 @@ from collections.abc import Mapping
 
 MODES = (
     "NEW_PROJECT", "EXISTING_PROJECT", "FEATURE_DEVELOPMENT", "BUG_FIX",
-    "CODE_REVIEW", "ARCHITECTURE_REVIEW", "REFACTORING", "SECURITY_AUDIT",
+    "CODE_REVIEW", "CODE_OPTIMIZATION", "ARCHITECTURE_REVIEW", "REFACTORING", "SECURITY_AUDIT",
     "DATABASE_OPTIMIZATION", "DESIGN", "TESTING", "DEPLOYMENT", "MODERNIZATION",
 )
 RISKS = ("LOW", "MEDIUM", "HIGH", "CRITICAL")
@@ -16,10 +16,12 @@ AREA_AGENTS = {
     "frontend": "frontend-developer", "backend": "backend-developer",
     "database": "database-engineer", "qa": "qa-engineer",
     "security": "security-engineer", "devops": "devops-engineer",
+    "optimization": "code-optimization-engineer",
 }
 MODE_AGENTS = {
     "NEW_PROJECT": ("software-architect",),
     "CODE_REVIEW": ("code-review-engineer",),
+    "CODE_OPTIMIZATION": ("code-optimization-engineer",),
     "ARCHITECTURE_REVIEW": ("software-architect",),
     "SECURITY_AUDIT": ("security-engineer",),
     "DATABASE_OPTIMIZATION": ("database-engineer",),
@@ -74,9 +76,9 @@ def select(mode, risk="LOW", areas=(), delegation=False, parallel=False):
     specialists = list(MODE_AGENTS.get(mode, ()))
     # Review-only modes stay read-only. Domain implementers can be consulted by
     # the leader when necessary, rather than automatically being summoned.
-    review_only = mode in {"CODE_REVIEW", "ARCHITECTURE_REVIEW", "SECURITY_AUDIT"}
+    review_only = mode in {"CODE_REVIEW", "CODE_OPTIMIZATION", "ARCHITECTURE_REVIEW", "SECURITY_AUDIT"}
     if not review_only:
-        specialists += [agent for area, agent in AREA_AGENTS.items() if area in areas]
+        specialists += [agent for area, agent in AREA_AGENTS.items() if area in areas and not (mode == "NEW_PROJECT" and area == "optimization")]
     if risk != "LOW" and not review_only:
         specialists.extend(("qa-engineer", "code-review-engineer"))
     if risk == "CRITICAL" and not review_only:
@@ -93,6 +95,7 @@ def select(mode, risk="LOW", areas=(), delegation=False, parallel=False):
             "parallel_requires": ["independent_tasks", "agreed_contracts", "exclusive_file_ownership", "isolation"],
             "review_independence_possible": bool(delegation and "code-review-engineer" in specialists),
             "read_only": review_only,
+            "requires_existing_implementation": "code-optimization-engineer" in specialists,
         },
     }
 

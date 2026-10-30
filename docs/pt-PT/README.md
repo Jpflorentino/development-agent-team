@@ -1,6 +1,6 @@
 # Development Agent Team — guia em português de Portugal
 
-A versão 1.0.0 disponibiliza dez papéis de engenharia, definições canónicas, adaptadores para Claude Code, Codex, GitHub Copilot e ChatGPT, instalação com deteção de conflitos e memória persistente por projeto. Requer Python 3.11 ou superior e utiliza apenas a biblioteca standard.
+A versão 1.0.0 disponibiliza onze papéis de engenharia, definições canónicas, adaptadores para Claude Code, Codex, GitHub Copilot e ChatGPT, instalação com deteção de conflitos e memória persistente por projeto. Requer Python 3.11 ou superior e utiliza apenas a biblioteca standard.
 
 O Team Leader coordena o trabalho e é o interlocutor do utilizador. Seleciona apenas os especialistas necessários: Software Architect, UI/UX Designer, Frontend Developer, Backend Developer, Database Engineer, QA/Test Engineer, Security Engineer, DevOps Engineer e Code Review Engineer. Os agentes respondem, por defeito, no idioma do utilizador.
 
@@ -26,7 +26,7 @@ O Team Leader responde em linguagem natural, no seu idioma, com a recomendação
 
 As instruções geradas para a conversa principal omitem os esquemas de campos JSON internos. Esses contratos continuam nos perfis delegados e nas referências canónicas, para os relatórios dos especialistas.
 
-O plano identifica a tarefa atribuída a cada especialista relevante, o estado real da participação, a recomendação, os motivos e as evidências disponíveis. Os papéis desnecessários são identificados com uma justificação breve; não se convocam os dez agentes só para preencher um relatório. Uma delegação nativa, uma passagem sequencial por um papel e uma proposta do líder são situações distintas. Ter o perfil instalado não prova que recebeu uma tarefa.
+O plano identifica a tarefa atribuída a cada especialista relevante, o estado real da participação, a recomendação, os motivos e as evidências disponíveis. Os papéis desnecessários são identificados com uma justificação breve; não se convocam todos os agentes só para preencher um relatório. Uma delegação nativa, uma passagem sequencial por um papel e uma proposta do líder são situações distintas. Ter o perfil instalado não prova que recebeu uma tarefa.
 
 ## Instalação
 
@@ -56,7 +56,7 @@ Explique a ideia em linguagem natural. Não precisa de escolher tecnologias, org
 
 Este pedido deve iniciar a discussão de arquitetura, com consulta ao arquiteto. Depois da tua aprovação, o líder prepara as tarefas dos agentes e pede autorização para as executar. O deployment e os custos podem ser discutidos posteriormente. Não tens de repetir estas regras na prompt.
 
-A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não significa que já exista uma aplicação. A ausência de código ou de contexto preenchido é normal neste modo. O Team Leader esclarece o produto, consulta o Software Architect quando útil e só depois encaminha a implementação necessária. Não convoca automaticamente os dez agentes nem cria ficheiros de planeamento no projeto.
+A existência de `.codex/`, `.ai-team/`, `AGENTS.md` ou metadados Git não significa que já exista uma aplicação. A ausência de código ou de contexto preenchido é normal neste modo. O Team Leader esclarece o produto, consulta o Software Architect quando útil e só depois encaminha a implementação necessária. Não convoca automaticamente todos os agentes nem cria ficheiros de planeamento no projeto.
 
 ### Explicar um projeto já iniciado
 
@@ -71,6 +71,14 @@ Descreva a funcionalidade, o erro ou a revisão pretendida, por exemplo:
 Quando existem subagentes nativos, o Team Leader pode delegar tarefas delimitadas. Sem esse mecanismo, executa passagens sequenciais pelos papéis e identifica essa limitação. Uma passagem de revisão na mesma conversa não constitui revisão independente. Riscos HIGH e CRITICAL exigem uma revisão separada para satisfazer o respetivo gate.
 
 Paralelismo requer tarefas independentes, contratos definidos, isolamento e responsabilidade exclusiva pelos ficheiros. O módulo Python `dat/policy.py` valida contratos e políticas determinísticas; não executa modelos, não lança agentes e não concede permissões.
+
+## Limpeza e otimização de código existente
+
+O novo `code-optimization-engineer` analisa código já implementado, mesmo sem alterações recentes no Git. Procura complexidade desnecessária, duplicação, candidatos a código morto e trabalho evitável, apresentando alternativas mais simples, benefícios concretos, riscos e validação necessária. Não é ativado para começar um projeto vazio.
+
+> Revê este módulo já implementado e propõe simplificações e otimizações, preservando o comportamento público.
+
+A revisão é apenas de leitura. O Team Leader apresenta as propostas e encaminha as alterações autorizadas para os implementadores da área, com QA e revisão independente quando exigida. Ganhos de desempenho só são declarados com medições; terminar a análise não significa que o código foi alterado. O especialista tem o seu contexto técnico privado, cujas propostas são guardadas pelo líder. Consulte [o fluxo completo](../code-optimization.md).
 
 ## Gestor de tarefas
 

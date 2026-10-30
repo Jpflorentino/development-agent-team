@@ -2,7 +2,7 @@
 
 Development Agent Team is a reusable framework that organizes AI coding assistants into a virtual software engineering team. You describe what you want to build or change to a Team Leader, who clarifies the requirements, involves the specialists needed and coordinates implementation, review and testing.
 
-It supports both a new project that starts with an idea and an existing application that needs development or maintenance. The framework provides ten specialist definitions, platform adapters, installation tools and persistent project context. Your chosen AI platform runs the agents using its available tools and permissions; no permanent framework server is required.
+It supports both a new project that starts with an idea and an existing application that needs development or maintenance. The framework provides eleven role definitions, platform adapters, installation tools and persistent project context. Your chosen AI platform runs the agents using its available tools and permissions; no permanent framework server is required.
 
 Version **1.0.0** · Python **3.11+** · MIT License. [Documentação em português de Portugal](docs/pt-PT/README.md).
 
@@ -33,7 +33,7 @@ The Team Leader answers you conversationally in your language, with a recommenda
 
 Generated main-conversation instructions omit the internal JSON field schemas. Those contracts remain in the canonical reference bundle and delegated profiles, where they are needed for specialist returns.
 
-The plan identifies who was actually consulted, the task assigned, its status, recommendation, rationale and evidence. Roles not needed are identified without activating all ten. Native delegation, sequential role passes and leader proposals are labelled distinctly; installed profiles alone do not prove that an agent received a task. See the [planning and approval protocol](docs/orchestration.md#reviewable-plan-and-approval).
+The plan identifies who was actually consulted, the task assigned, its status, recommendation, rationale and evidence. Roles not needed are identified without activating all roles. Native delegation, sequential role passes and leader proposals are labelled distinctly; installed profiles alone do not prove that an agent received a task. See the [planning and approval protocol](docs/orchestration.md#reviewable-plan-and-approval).
 
 Adapters are included for **Claude Code, OpenAI Codex, GitHub Copilot and ChatGPT**. Native agent formats are generated where supported; ChatGPT uses a manual Project export. Installing files does not prove native loading or execution. See the [capability matrix](docs/compatibility.md) and [executed validation evidence](docs/validation.md) for tested behavior and limitations.
 
@@ -51,8 +51,9 @@ Adapters are included for **Claude Code, OpenAI Codex, GitHub Copilot and ChatGP
 | `security-engineer` | Evidence based security analysis and safeguards |
 | `devops-engineer` | Build, infrastructure, delivery and operations |
 | `code-review-engineer` | Independent, read-only review where delegation permits |
+| `code-optimization-engineer` | Review existing code for cleanup, simplification and evidenced optimization |
 
-The ten canonical definitions live in [`agents/`](agents/). Adapters translate those definitions into each platform's format. Instructions cover thirteen modes, from new projects and bug fixes to architecture review, testing, modernization and deployment. Figma is preferred when available and authorized; otherwise the designer produces an implementable alternative and identifies that limitation.
+The eleven canonical definitions live in [`agents/`](agents/). Adapters translate those definitions into each platform's format. Instructions cover fourteen modes, from new projects and bug fixes to architecture review, testing, modernization and deployment. Figma is preferred when available and authorized; otherwise the designer produces an implementable alternative and identifies that limitation.
 
 ## Get started
 
@@ -87,7 +88,7 @@ Describe what you want to build in ordinary language. You do not need to choose 
 
 The leader should discuss the product and architecture with you, consulting Architect first. After you approve the architecture, it presents the task allocation for execution approval. Deployment and costs can be discussed later with DevOps. You do not need to restate that workflow in your brief.
 
-An empty application folder is expected in this mode. Installation files such as `.codex/`, `.ai-team/`, `AGENTS.md` and Git metadata do not make it an existing application. Missing source files, an unset stack or unfilled context templates are not failures. The leader clarifies the product first, consults the Software Architect when useful, and delegates implementation after the relevant decisions are resolved. It does not activate all ten agents automatically or create planning files in your project.
+An empty application folder is expected in this mode. Installation files such as `.codex/`, `.ai-team/`, `AGENTS.md` and Git metadata do not make it an existing application. Missing source files, an unset stack or unfilled context templates are not failures. The leader clarifies the product first, consults the Software Architect when useful, and delegates implementation after the relevant decisions are resolved. It does not activate all roles automatically or create planning files in your project.
 
 ### Explain a project already started
 
@@ -108,6 +109,12 @@ Within an authorized task, agents may inspect code, make scoped changes, run non
 Shared facts live in `agents/<project>-context.md`; each role also reads its own `agents/contexts/<role>-context.md`. The leader owns shared decisions and coordination; writable specialists own their technical notes, while read-only reviewers propose notes for the leader to save. A first execution in an existing application analyzes and fills these files before application changes, then checks useful host integrations and requests scoped installation consent. Installation only creates pending templates. See [context management](docs/context-management.md) and [first-use onboarding](docs/onboarding.md).
 
 Installed consumer agents, context and metadata are private local files with persistent Git exclusions. Sharing flags are rejected. Already tracked protected files block project installation/update: ignore rules cannot unpublish them, and the installer does not alter Git history or the index. Canonical definitions in this framework repository remain versionable.
+
+## Review existing code for cleanup and optimization
+
+The Code Cleanup & Optimization Engineer reviews code already implemented, even without a current diff. It identifies justified simplifications, duplication/dead-code candidates and performance hypotheses, with locations, tradeoffs, risk and validation requirements. It does not join empty-project setup. Review is read-only; the leader presents useful proposals and routes approved refactors to domain implementers, QA and independent review as needed. Performance gains require measurements. See [the workflow](docs/code-optimization.md).
+
+> Review this existing module for unnecessary complexity and duplication. Propose simpler alternatives while preserving its public behavior.
 
 ## Use a task manager
 
@@ -141,6 +148,8 @@ After updating canonical instructions in this checkout, use `update` for each ex
 `python3 scripts/native_onboarding_smoke.py --execute --timeout 240` tests first-use analysis in a writable synthetic existing application. It checks that application files remain unchanged and that contexts and evidence are populated; manual transcript review verifies findings and actual participation. No provider installation is exercised.
 
 `python3 scripts/native_task_manager_smoke.py --execute --timeout 240` exercises real Codex tool calls through a temporary local MCP fixture: paginated backlog reads, task creation, status update and targeted trash. This uses account quota but no real Notion workspace.
+
+`python3 scripts/native_optimization_smoke.py --execute --scenario existing --timeout 240` checks a normal cleanup/optimization request against an existing synthetic implementation. Use `--scenario empty` to check missing-code handling. These account-backed tests are read-only and require manual review of attribution, proposals and unmeasured claims.
 
 ## Documentation and examples
 

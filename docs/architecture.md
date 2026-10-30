@@ -1,6 +1,6 @@
 # Architecture
 
-Development Agent Team is a file-based engineering framework with exactly ten canonical roles, native platform adapters, a small maintenance CLI, hybrid context and deterministic orchestration contracts. It needs no custom orchestration server, central database, message broker, web administration application or permanent process.
+Development Agent Team is a file-based engineering framework with eleven canonical roles, native platform adapters, a small maintenance CLI, hybrid context and deterministic orchestration contracts. It needs no custom orchestration server, central database, message broker, web administration application or permanent process.
 
 ## Components and boundaries
 
@@ -39,7 +39,7 @@ On recovery, inspect current worktree and actual authorizations; remembered comp
 
 ## Safety and quality
 
-Permissions derive from the user and the environment, not from a role or routing helper. Code Review and Security default to read-only and return findings rather than patching them. Native technical restrictions should enforce this boundary where available. Git publication and sensitive operational changes in consumer projects require authorization. See [security](security.md).
+Permissions derive from the user and the environment, not from a role or routing helper. Code Review, Security and Code Optimization default to read-only and return findings rather than patching them. Native technical restrictions should enforce this boundary where available. Git publication and sensitive operational changes in consumer projects require authorization. See [security](security.md).
 
 Risk-based quality gates combine localized checks, relevant tests, functional validation, independent review, security assessment and operational rollback requirements as needed. Contract tests check routing and response structure; they cannot establish actual agent quality, delegation or platform tool enforcement. The compatibility matrix distinguishes structural generation from executed runtime validation.
 
