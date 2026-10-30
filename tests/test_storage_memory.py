@@ -35,7 +35,7 @@ class StorageMemoryTests(unittest.TestCase):
         path.parent.mkdir(parents=True)
         record = {"state": "applying", "changes": [{"path": "existing", "before": base64.b64encode(b"before").decode(),
                                                     "after_hash": digest(b"after")} ]}
-        path.write_text(json.dumps(record))
+        path.write_text(json.dumps(record), encoding="utf-8")
         (self.root / "existing").write_bytes(value)
         return path
 
@@ -100,7 +100,7 @@ class StorageMemoryTests(unittest.TestCase):
         file = self.root / memory.filename(target=self.root)
         raw = file.read_text(encoding="utf-8")
         entry = next(line for line in raw.splitlines() if line.startswith("- ["))
-        file.write_text(raw.replace(entry, entry + "\n" + entry))
+        file.write_text(raw.replace(entry, entry + "\n" + entry), encoding="utf-8")
         memory.compact(self.root)
         self.assertEqual(file.read_text(encoding="utf-8").count("Keep contracts"), 1)
         self.assertIn("APPROVED", file.read_text(encoding="utf-8"))
@@ -111,7 +111,7 @@ class StorageMemoryTests(unittest.TestCase):
         file = self.root / memory.filename(target=self.root)
         raw = file.read_text(encoding="utf-8")
         import re
-        file.write_text(re.sub(r"\d{4}-\d{2}-\d{2}", "2020-01-01", raw))
+        file.write_text(re.sub(r"\d{4}-\d{2}-\d{2}", "2020-01-01", raw), encoding="utf-8")
         before = file.read_bytes()
         result = memory.stale(self.root, days=30)
         self.assertTrue(result)

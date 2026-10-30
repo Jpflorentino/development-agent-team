@@ -49,22 +49,22 @@ class CodeOptimizationTests(unittest.TestCase):
             for role in ROLES:
                 record(target, role, "not_applicable", "Harness baseline has no implemented application domain")
             state_path = target / STATE
-            legacy = json.loads(state_path.read_text())
+            legacy = json.loads(state_path.read_text(encoding="utf-8"))
             legacy["roles"].pop(ROLE)
             legacy["integration_review"] = {"status": "verified", "binding": "selected-board"}
             legacy["user_note"] = "Preserve prior evidence and scope"
-            state_path.write_text(json.dumps(legacy))
+            state_path.write_text(json.dumps(legacy), encoding="utf-8")
             (target / role_path(ROLE)).unlink()
             previous = {role: (target / role_path(role)).read_bytes() for role in ROLES if role != ROLE}
             maintain(ROOT, target, "codex", action="update")
-            updated = json.loads(state_path.read_text())
+            updated = json.loads(state_path.read_text(encoding="utf-8"))
             for role, value in legacy["roles"].items():
                 self.assertEqual(updated["roles"][role], value)
                 self.assertEqual((target / role_path(role)).read_bytes(), previous[role])
             self.assertEqual(updated["integration_review"], legacy["integration_review"])
             self.assertEqual(updated["user_note"], legacy["user_note"])
             self.assertEqual(updated["roles"][ROLE]["status"], "pending")
-            self.assertIn("BOOTSTRAP_PENDING", (target / role_path(ROLE)).read_text())
+            self.assertIn("BOOTSTRAP_PENDING", (target / role_path(ROLE)).read_text(encoding="utf-8"))
             self.assertEqual(status(target)["phase"], "pending")
             self.assertEqual(maintain(ROOT, target, "codex", action="update")["changed"], [])
 
@@ -73,9 +73,9 @@ class CodeOptimizationTests(unittest.TestCase):
             target = Path(folder) / "project"
             maintain(ROOT, target, "codex")
             path = target / STATE
-            state = json.loads(path.read_text())
+            state = json.loads(path.read_text(encoding="utf-8"))
             state["roles"]["unknown-future-role"] = {"status": "pending"}
-            path.write_text(json.dumps(state))
+            path.write_text(json.dumps(state), encoding="utf-8")
             before = path.read_bytes()
             with self.assertRaisesRegex(Conflict, "Unsupported onboarding record"):
                 maintain(ROOT, target, "codex", action="update")
@@ -86,9 +86,9 @@ class CodeOptimizationTests(unittest.TestCase):
             source = Path(folder) / "framework"
             shutil.copytree(ROOT, source, ignore=shutil.ignore_patterns(".git", "__pycache__"))
             path = source / "agents/catalog.json"
-            data = json.loads(path.read_text())
+            data = json.loads(path.read_text(encoding="utf-8"))
             next(agent for agent in data["agents"] if agent["id"] == ROLE)["read_only"] = False
-            path.write_text(json.dumps(data))
+            path.write_text(json.dumps(data), encoding="utf-8")
             self.assertIn(f"{ROLE}: mandatory read_only safety policy disabled", validate(source)["errors"])
 
     def test_native_review_is_opt_in(self):

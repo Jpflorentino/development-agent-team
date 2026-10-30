@@ -89,12 +89,12 @@ def main():
             elif method == "tools/list":
                 result = {"tools": TOOLS}
             elif method == "tools/call":
-                state = json.loads(state_path.read_text())
+                state = json.loads(state_path.read_text(encoding="utf-8"))
                 name, args = params["name"], params.get("arguments", {})
-                with log_path.open("a") as log:
+                with log_path.open("a", encoding="utf-8") as log:
                     log.write(json.dumps({"name": name, "arguments": args}) + "\n")
                 value = call(state, name, args)
-                state_path.write_text(json.dumps(state))
+                state_path.write_text(json.dumps(state), encoding="utf-8")
                 result = {"content": [{"type": "text", "text": json.dumps(value)}]}
             else:
                 raise ValueError("Unsupported fixture method")

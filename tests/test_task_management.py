@@ -27,7 +27,7 @@ class TaskManagementTests(unittest.TestCase):
                     main = next((text for name, text in files.items() if name in INSTRUCTION_FILES), files.get(".ai-team/chatgpt/project-instructions.md"))
                     self.assertIn("docs/task-management.md", main)
                     doc = files[f".ai-team/framework/{platform}/docs/task-management.md"]
-                    self.assertEqual(doc, (ROOT / "docs/task-management.md").read_text())
+                    self.assertEqual(doc, (ROOT / "docs/task-management.md").read_text(encoding="utf-8"))
                     self.assertIn("single coordinator", doc)
                     self.assertIn("explicit user intent identifying the exact task", doc)
                     self.assertIn("never blindly repeat creation or deletion", doc)

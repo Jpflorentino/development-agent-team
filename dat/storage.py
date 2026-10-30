@@ -76,7 +76,7 @@ def locked(root: Path):
     except FileExistsError as error:
         raise Conflict("Maintenance/memory lock exists; inspect doctor, then recover --unlock if its process has stopped.") from error
     try:
-        with os.fdopen(fd, "w") as stream:
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
             json.dump({"pid": os.getpid(), "host": socket.gethostname()}, stream)
         yield
     finally:

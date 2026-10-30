@@ -29,7 +29,7 @@ class PhaseSmokeTests(unittest.TestCase):
                  patch.object(smoke.sys, "argv", ["native_phase_smoke.py", "--execute"]), \
                  contextlib.redirect_stdout(io.StringIO()):
                 code = smoke.main()
-            result = json.loads((artifacts / "assessment.json").read_text())
+            result = json.loads((artifacts / "assessment.json").read_text(encoding="utf-8"))
             return code, result, native.call_args_list
 
     def test_same_session_continues_read_only_and_requires_manual_review(self):
@@ -69,7 +69,7 @@ class PhaseSmokeTests(unittest.TestCase):
 
     def test_project_mutation_stops_conversation(self):
         def mutate(command, prompt, folder, timeout):
-            (folder / "unexpected.txt").write_text("Unexpected application change")
+            (folder / "unexpected.txt").write_text("Unexpected application change", encoding="utf-8")
             return reply()
         code, result, calls = self.run_fixture(mutate)
         self.assertEqual(code, 2)

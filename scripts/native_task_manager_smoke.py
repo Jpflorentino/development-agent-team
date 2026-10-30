@@ -35,14 +35,14 @@ def main():
     artifacts = Path(tempfile.mkdtemp(prefix="dat-task-manager-smoke-"))
     project = artifacts / "project"
     project.mkdir()
-    (project / "app.py").write_text('def greeting():\n    return "Hello"\n')
-    (project / "README.md").write_text("# Synthetic application\nOne Python module, app.py; no external application services.\n")
+    (project / "app.py").write_text('def greeting():\n    return "Hello"\n', encoding="utf-8")
+    (project / "README.md").write_text("# Synthetic application\nOne Python module, app.py; no external application services.\n", encoding="utf-8")
     maintain(root, project, "codex")
     for role in ROLES:
         if role in ("team-leader", "backend-developer", "qa-engineer"):
             (project / role_path(role)).write_text("## STATUS\ncompleted\n\n" + "\n".join(
                 f"## {heading}\nHarness-inspected baseline: app.py has a constant greeting(), no external services or storage. No independent agent execution claimed.\n"
-                for heading in ROLE_SECTIONS[role]))
+                for heading in ROLE_SECTIONS[role]), encoding="utf-8")
             record(project, role, "completed", "Harness-inspected app.py baseline; no model participation claimed", ["app.py", "README.md"])
         else:
             record(project, role, "not_applicable", "No relevant UI, data, infrastructure or review scope in this synthetic baseline", ["app.py", "README.md"])
@@ -51,7 +51,7 @@ def main():
     add(project, "INTEGRATIONS", "User-selected local synthetic MCP tracker dat_tasks, board fixture-project. Read/create/update_status and trash specifically identified tasks permitted by the current task request. Fetch schema with get_board. No real provider account.")
     add(project, "CURRENT_STATE", "Established baseline analyzed by the harness from app.py and README.md; no application changes requested.")
     brain = project / filename(target=project)
-    brain.write_text(brain.read_text().replace("Bootstrap required: fill unknown sections from inspected evidence, never invented facts.", "Established harness-prepared baseline; onboarding complete."))
+    brain.write_text(brain.read_text(encoding="utf-8").replace("Bootstrap required: fill unknown sections from inspected evidence, never invented facts.", "Established harness-prepared baseline; onboarding complete."), encoding="utf-8")
     state_path, log_path = artifacts / "tracker.json", artifacts / "calls.jsonl"
     initial = {"tasks": [
         {"id": "t-1", "title": "Validar formulário", "status": "Pendente", "revision": 1,
@@ -61,7 +61,7 @@ def main():
         {"id": "t-done", "title": "Concluído anteriormente", "status": "Concluída", "revision": 1},
         {"id": "t-obsolete", "title": "Tarefa obsoleta", "status": "Pendente", "revision": 1},
     ]}
-    state_path.write_text(json.dumps(initial))
+    state_path.write_text(json.dumps(initial), encoding="utf-8")
     before = snapshot(project)
     command = ["codex", "exec", "--ignore-user-config", "--skip-git-repo-check", "--sandbox", "workspace-write",
                "--config", "mcp_servers.dat_tasks.command=" + json.dumps(sys.executable),
@@ -74,10 +74,10 @@ def main():
               'Cria uma tarefa chamada "Documentar instalação", coloca t-1 no estado Em curso e apaga apenas t-obsolete. '
               'Mostra também bloqueios e tarefas por esclarecer. Não alteres a aplicação nem marques tarefas como concluídas.')
     code, stdout, stderr = invoke(command, prompt, project, args.timeout)
-    (artifacts / "stdout.jsonl").write_text(stdout)
-    (artifacts / "stderr.txt").write_text(stderr)
-    state = json.loads(state_path.read_text())
-    calls = [json.loads(line) for line in log_path.read_text().splitlines()] if log_path.exists() else []
+    (artifacts / "stdout.jsonl").write_text(stdout, encoding="utf-8")
+    (artifacts / "stderr.txt").write_text(stderr, encoding="utf-8")
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    calls = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()] if log_path.exists() else []
     tasks = {t["id"]: t for t in state["tasks"]}
     created = [t for t in state["tasks"] if t["id"] not in {t["id"] for t in initial["tasks"]}]
     names = {c["name"] for c in calls}
@@ -97,7 +97,7 @@ def main():
     result = {"status": "ready_for_manual_review" if all(checks.values()) else "incomplete", "checks": checks,
               "artifacts": str(artifacts), "changed": changed,
               "limitations": "Real Codex/MCP calls against a synthetic local fixture only. Manually review Portuguese response, unknown/blocked task coverage, actual results and privacy. No Notion/account operations tested."}
-    (artifacts / "assessment.json").write_text(json.dumps(result, indent=2))
+    (artifacts / "assessment.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result, indent=2))
     return 0 if all(checks.values()) else 2
 

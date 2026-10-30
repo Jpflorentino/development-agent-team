@@ -112,7 +112,7 @@ class AdapterTests(unittest.TestCase):
                     self.assertIn("### User conversation", main)
                     self.assertIn("## Communication rules", main)
                     self.assertIn("## Available specialist profiles", main)
-                    runtime = (ROOT / f"adapters/{platform}/runtime.md").read_text().strip()
+                    runtime = (ROOT / f"adapters/{platform}/runtime.md").read_text(encoding="utf-8").strip()
                     self.assertIn(runtime, main)
                     canonical = files[f".ai-team/framework/{platform}/agents/team-leader.md"]
                     self.assertIn("### Internal delegation report", canonical)

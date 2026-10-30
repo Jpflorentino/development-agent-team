@@ -46,7 +46,7 @@ class ValidationTests(unittest.TestCase):
             for agent in catalog["agents"]:
                 if agent["id"] in ("security-engineer", "code-review-engineer", "code-optimization-engineer"):
                     agent["read_only"] = False
-            path.write_text(json.dumps(catalog))
+            path.write_text(json.dumps(catalog), encoding="utf-8")
             errors = validate(source)["errors"]
             self.assertTrue(any("mandatory read_only" in message for message in errors), errors)
 

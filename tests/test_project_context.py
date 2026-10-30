@@ -28,11 +28,11 @@ class ProjectContextTests(unittest.TestCase):
                          [self.target / "agents/my-project-context.md"])
         self.assertFalse((self.target / LEGACY_SHARED).exists())
         self.assertFalse((self.target / LEGACY_PRIVATE).exists())
-        self.assertIn("agents/my-project-context.md", (self.target / "AGENTS.md").read_text())
-        self.assertNotIn("agents/<project>-context.md", (self.target / "AGENTS.md").read_text())
+        self.assertIn("agents/my-project-context.md", (self.target / "AGENTS.md").read_text(encoding="utf-8"))
+        self.assertNotIn("agents/<project>-context.md", (self.target / "AGENTS.md").read_text(encoding="utf-8"))
         import tomllib
         for profile in (self.target / ".codex/agents").glob("dat-*.toml"):
-            body = tomllib.loads(profile.read_text())["developer_instructions"]
+            body = tomllib.loads(profile.read_text(encoding="utf-8"))["developer_instructions"]
             self.assertIn("agents/my-project-context.md", body)
             self.assertNotIn("agents/<project>-context.md", body)
         self.assertIn("Bootstrap required", memory.show(self.target)["text"])
@@ -73,16 +73,16 @@ class ProjectContextTests(unittest.TestCase):
         path = self.target / "agents/fit-escola-context.md"
         path.parent.mkdir(parents=True)
         value = "# Project knowledge\nUser-maintained decisions.\n"
-        path.write_text(value)
+        path.write_text(value, encoding="utf-8")
         self.install()
         self.assertEqual(memory.show(self.target)["file"], "agents/fit-escola-context.md")
-        self.assertEqual(path.read_text(), value)
+        self.assertEqual(path.read_text(encoding="utf-8"), value)
 
     def test_ambiguous_brains_require_explicit_selection(self):
         folder = self.target / "agents"
         folder.mkdir(parents=True)
         for name in ("first-context.md", "second-context.md"):
-            (folder / name).write_text(name)
+            (folder / name).write_text(name, encoding="utf-8")
         with self.assertRaisesRegex(Conflict, "Multiple"):
             self.install()
         self.assertFalse((self.target / "AGENTS.md").exists())
@@ -102,7 +102,7 @@ class ProjectContextTests(unittest.TestCase):
     def test_dry_run_migration_does_not_write(self):
         path = self.target / LEGACY_SHARED
         path.parent.mkdir(parents=True)
-        path.write_text("# Legacy project facts\n")
+        path.write_text("# Legacy project facts\n", encoding="utf-8")
         self.install(dry_run=True)
         self.assertFalse((self.target / POINTER).exists())
         self.assertFalse((self.target / "agents").exists())
@@ -111,7 +111,7 @@ class ProjectContextTests(unittest.TestCase):
         self.install(scope="global")
         self.assertFalse((self.target / POINTER).exists())
         self.assertFalse((self.target / "agents").exists())
-        self.assertIn("agents/<project>-context.md", (self.target / ".codex/AGENTS.md").read_text())
+        self.assertIn("agents/<project>-context.md", (self.target / ".codex/AGENTS.md").read_text(encoding="utf-8"))
 
     def test_context_path_rejects_escape_and_malformed_values(self):
         for value in ("../outside-context.md", "/tmp/outside-context.md", "agents/nested/name-context.md",
@@ -152,7 +152,7 @@ class ProjectContextTests(unittest.TestCase):
 
     def test_tampered_context_pointer_is_rejected(self):
         self.install()
-        (self.target / POINTER).write_text("../outside-context.md\n")
+        (self.target / POINTER).write_text("../outside-context.md\n", encoding="utf-8")
         with self.assertRaises(Conflict):
             memory.show(self.target)
 
@@ -162,19 +162,19 @@ class ProjectContextTests(unittest.TestCase):
         brain.unlink()
         (self.target / POINTER).unlink()
         legacy = self.target / LEGACY_SHARED
-        legacy.write_text("# Legacy facts to preserve\n")
+        legacy.write_text("# Legacy facts to preserve\n", encoding="utf-8")
         profile = self.target / ".codex/agents/dat-backend-developer.toml"
-        profile.write_text("User customization")
+        profile.write_text("User customization", encoding="utf-8")
         with self.assertRaises(Conflict):
             self.install(action="update")
         self.assertFalse(brain.exists())
         self.assertFalse((self.target / POINTER).exists())
-        self.assertEqual(legacy.read_text(), "# Legacy facts to preserve\n")
+        self.assertEqual(legacy.read_text(encoding="utf-8"), "# Legacy facts to preserve\n")
 
     def test_possible_legacy_secret_is_not_copied(self):
         legacy = self.target / LEGACY_SHARED
         legacy.parent.mkdir(parents=True)
-        legacy.write_text("password=synthetic-secret-fixture\n")
+        legacy.write_text("password=synthetic-secret-fixture\n", encoding="utf-8")
         with self.assertRaisesRegex(Conflict, "credential"):
             self.install()
         self.assertFalse((self.target / "agents/my-project-context.md").exists())

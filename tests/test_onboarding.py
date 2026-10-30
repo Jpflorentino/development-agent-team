@@ -28,7 +28,7 @@ class OnboardingTests(unittest.TestCase):
 
     def source(self):
         self.project.mkdir(parents=True, exist_ok=True)
-        (self.project / "app.py").write_text("def greeting():\n    return 'Hello'\n")
+        (self.project / "app.py").write_text("def greeting():\n    return 'Hello'\n", encoding="utf-8")
 
     def test_all_private_role_contexts_start_pending(self):
         self.install()
@@ -39,7 +39,7 @@ class OnboardingTests(unittest.TestCase):
         self.assertEqual(inspect(self.project)[0]["modified_or_missing"], [])
 
     def test_memory_roles_match_canonical_catalog(self):
-        catalog = json.loads((ROOT / "agents/catalog.json").read_text())
+        catalog = json.loads((ROOT / "agents/catalog.json").read_text(encoding="utf-8"))
         self.assertEqual(set(ROLES), {role["id"] for role in catalog["agents"]})
 
     def test_unreadable_existing_git_metadata_does_not_bypass_privacy(self):
@@ -56,7 +56,7 @@ class OnboardingTests(unittest.TestCase):
         with self.assertRaisesRegex(Conflict, "actual technical context"):
             onboarding.record(self.project, "software-architect", "completed", "Inspected code", ["app.py"])
         path = self.project / role_path("software-architect")
-        path.write_text("# Architecture context\n\n## STATUS\ncompleted\n\n## BOUNDARIES\nPython module in app.py; no external persistence.\n")
+        path.write_text("# Architecture context\n\n## STATUS\ncompleted\n\n## BOUNDARIES\nPython module in app.py; no external persistence.\n", encoding="utf-8")
         with self.assertRaisesRegex(Conflict, "source references"):
             onboarding.record(self.project, "software-architect", "completed", "Inspected code")
         onboarding.record(self.project, "software-architect", "completed", "Inspected code", ["app.py"])
@@ -66,7 +66,7 @@ class OnboardingTests(unittest.TestCase):
         self.source()
         self.install()
         role = "software-architect"
-        (self.project / role_path(role)).write_text("## STATUS\ncompleted\n\n## BOUNDARIES\nPython module in app.py.\n")
+        (self.project / role_path(role)).write_text("## STATUS\ncompleted\n\n## BOUNDARIES\nPython module in app.py.\n", encoding="utf-8")
         with self.assertRaisesRegex(Conflict, "inspected source references"):
             onboarding.record(self.project, role, "completed", "Inspected code", [role_path(role)])
         onboarding.record(self.project, role, "completed", "Inspected code", ["app.py", role_path(role)])
@@ -91,7 +91,7 @@ class OnboardingTests(unittest.TestCase):
         state = onboarding.load(self.project)
         for role in ROLES:
             state["roles"][role] = {"status": "completed", "summary": "Claimed complete", "sources": ["missing.py"]}
-        (self.project / onboarding.STATE).write_text(json.dumps(state))
+        (self.project / onboarding.STATE).write_text(json.dumps(state), encoding="utf-8")
         result = onboarding.status(self.project)
         self.assertFalse(result["contexts_analyzed"])
         self.assertTrue(any("template" in error for error in result["errors"]))
@@ -100,18 +100,18 @@ class OnboardingTests(unittest.TestCase):
     def test_empty_notes_cannot_be_marked_complete(self):
         self.source()
         self.install()
-        (self.project / role_path("software-architect")).write_text("# Architecture\n\n## STATUS\ncompleted\n\n## BOUNDARIES\n")
+        (self.project / role_path("software-architect")).write_text("# Architecture\n\n## STATUS\ncompleted\n\n## BOUNDARIES\n", encoding="utf-8")
         with self.assertRaisesRegex(Conflict, "actual notes"):
             onboarding.record(self.project, "software-architect", "completed", "Claimed analysis", ["app.py"])
 
     def test_provider_detection_is_evidence_only_and_skips_secrets_dependencies(self):
         self.source()
-        (self.project / "package.json").write_text(json.dumps({"dependencies": {"@vercel/analytics": "1", "@supabase/supabase-js": "2"}, "scripts": {"private": "secret-value"}}))
-        (self.project / "vercel.json").write_text("{}")
-        (self.project / ".env").write_text("SECRET=never-read-this-value")
+        (self.project / "package.json").write_text(json.dumps({"dependencies": {"@vercel/analytics": "1", "@supabase/supabase-js": "2"}, "scripts": {"private": "secret-value"}}), encoding="utf-8")
+        (self.project / "vercel.json").write_text("{}", encoding="utf-8")
+        (self.project / ".env").write_text("SECRET=never-read-this-value", encoding="utf-8")
         generated = self.project / "node_modules/fake"
         generated.mkdir(parents=True)
-        (generated / "wrangler.toml").write_text("ignored")
+        (generated / "wrangler.toml").write_text("ignored", encoding="utf-8")
         result = scan(self.project)
         self.assertEqual({c["provider"] for c in result["integration_candidates"]}, {"Vercel", "Supabase"})
         self.assertNotIn("secret-value", json.dumps(result))
@@ -120,7 +120,7 @@ class OnboardingTests(unittest.TestCase):
 
     def test_scan_reports_partial_coverage_and_invalid_manifest(self):
         self.source()
-        (self.project / "package.json").write_text("invalid json")
+        (self.project / "package.json").write_text("invalid json", encoding="utf-8")
         self.assertTrue(scan(self.project)["warnings"])
         result = scan(self.project, max_files=1)
         self.assertTrue(any("partial" in warning for warning in result["warnings"]))
@@ -140,7 +140,7 @@ class OnboardingTests(unittest.TestCase):
     def test_tracked_context_blocks_install_without_touching_index_or_files(self):
         path = self.project / "agents/project-context.md"
         path.parent.mkdir(parents=True)
-        path.write_text("# Private context already tracked\n")
+        path.write_text("# Private context already tracked\n", encoding="utf-8")
         subprocess.run(["git", "init", "-q", str(self.project)], check=True)
         subprocess.run(["git", "add", "agents/project-context.md"], cwd=self.project, check=True)
         before = subprocess.check_output(["git", "ls-files", "--stage"], cwd=self.project)

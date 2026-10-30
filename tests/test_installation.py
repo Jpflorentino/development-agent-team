@@ -49,7 +49,7 @@ class InstallationTests(unittest.TestCase):
         self.install(action="uninstall")
         self.assertEqual((self.target / "AGENTS.md").read_bytes(), originals["AGENTS.md"])
         self.assertTrue((self.target / ".gitignore").read_bytes().startswith(originals[".gitignore"]))
-        self.assertIn("/agents/contexts/", (self.target / ".gitignore").read_text())
+        self.assertIn("/agents/contexts/", (self.target / ".gitignore").read_text(encoding="utf-8"))
 
     def test_customizations_outside_block_survive_update_and_remove(self):
         self.install()
@@ -91,7 +91,7 @@ class InstallationTests(unittest.TestCase):
         state = self.target / state_path("codex", "project")
         value = json.loads(state.read_text(encoding="utf-8"))
         value["version"] = "0.9.0"
-        state.write_text(json.dumps(value))
+        state.write_text(json.dumps(value), encoding="utf-8")
         from dat.adapters import render
         modified = render(ROOT, "codex", "project")
         path = ".codex/agents/dat-team-leader.toml"
@@ -119,14 +119,14 @@ class InstallationTests(unittest.TestCase):
                 self.install(action="update", **options)
         self.assertEqual((self.target / ".gitignore").read_bytes(), before)
         self.install(action="update")
-        self.assertIn("/.codex/agents/", (self.target / ".gitignore").read_text())
+        self.assertIn("/.codex/agents/", (self.target / ".gitignore").read_text(encoding="utf-8"))
 
     def test_uninstall_preserves_memory_and_unrelated_files(self):
         self.install()
         context = self.target / ".ai-team/context.md"
-        context.write_text("approved decision")
+        context.write_text("approved decision", encoding="utf-8")
         unrelated = self.target / "application.py"
-        unrelated.write_text("print('existing')")
+        unrelated.write_text("print('existing')", encoding="utf-8")
         self.install(action="uninstall")
         self.assertEqual(context.read_text(encoding="utf-8"), "approved decision")
         self.assertTrue(unrelated.exists())
@@ -178,14 +178,14 @@ class InstallationTests(unittest.TestCase):
     def test_legacy_sharing_flags_are_replaced_by_private_policy(self):
         self.install()
         path = self.target / state_path("codex", "project")
-        state = json.loads(path.read_text())
+        state = json.loads(path.read_text(encoding="utf-8"))
         state.update(share_agents=True, share_context=True)
-        path.write_text(json.dumps(state))
+        path.write_text(json.dumps(state), encoding="utf-8")
         self.install(action="update")
-        state = json.loads(path.read_text())
+        state = json.loads(path.read_text(encoding="utf-8"))
         self.assertFalse(state["share_agents"])
         self.assertFalse(state["share_context"])
-        self.assertIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text())
+        self.assertIn("context.md\n", (self.target / ".ai-team/.gitignore").read_text(encoding="utf-8"))
 
     @unittest.skipIf(__import__("os").name == "nt", "Windows symlink creation can require privileges")
     def test_symlink_target_is_rejected(self):

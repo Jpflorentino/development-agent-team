@@ -61,8 +61,8 @@ def main():
     project.mkdir()
     root = Path(__file__).resolve().parents[1]
     if args.scenario == "existing":
-        (project / "totals.py").write_text(SOURCE)
-        (project / "README.md").write_text("# Existing synthetic implementation\nPython standard library. Prices and IDs are integers; preserve positive-only totals and first-occurrence ID ordering. No external services or public API changes authorized. No benchmark or production workload exists.\n")
+        (project / "totals.py").write_text(SOURCE, encoding="utf-8")
+        (project / "README.md").write_text("# Existing synthetic implementation\nPython standard library. Prices and IDs are integers; preserve positive-only totals and first-occurrence ID ordering. No external services or public API changes authorized. No benchmark or production workload exists.\n", encoding="utf-8")
     maintain(root, project, "codex")
     if args.scenario == "existing":
         for role in ROLES:
@@ -70,7 +70,7 @@ def main():
                 notes = "## STATUS\ncompleted\n\n" + "\n".join(
                     f"## {heading}\nHarness-inspected baseline: totals.py implements integer positive-price totals and ordered unique integer IDs. No benchmark evidence or changes approved; no previous model participation claimed.\n"
                     for heading in ROLE_SECTIONS[role])
-                (project / role_path(role)).write_text(notes)
+                (project / role_path(role)).write_text(notes, encoding="utf-8")
                 record(project, role, "completed", "Harness prepared existing implementation baseline", ["totals.py", "README.md"])
             else:
                 record(project, role, "not_applicable", "No relevant UI, storage, operations or security boundary in this bounded synthetic baseline", ["totals.py", "README.md"])
@@ -78,15 +78,15 @@ def main():
         add(project, "CONSTRAINTS", "Preserve positive-only integer totals and first-occurrence order of integer IDs. No application changes, dependency installation or measured speedup claims without evidence.")
         add(project, "CURRENT_STATE", "Harness-inspected baseline complete. No benchmarks exist; current request seeks a cleanup/optimization review, not implementation.")
         brain = project / filename(target=project)
-        brain.write_text(brain.read_text().replace("Bootstrap required: fill unknown sections from inspected evidence, never invented facts.", "Established baseline prepared by the harness from actual synthetic sources."))
+        brain.write_text(brain.read_text(encoding="utf-8").replace("Bootstrap required: fill unknown sections from inspected evidence, never invented facts.", "Established baseline prepared by the harness from actual synthetic sources."), encoding="utf-8")
     before = snapshot(project)
     prompt = ('Revê o código já implementado em totals.py: procura duplicação, formas mais simples de o manter e trabalho desnecessário. '
               'Quero perceber o benefício, os riscos e como validar cada proposta antes de decidir alterações.') if args.scenario == "existing" else (
               'Quero uma revisão para limpeza, simplificação e otimização do código já implementado neste projeto.')
     command = ["codex", "exec", "--ignore-user-config", "--skip-git-repo-check", "--sandbox", "read-only", "--json", "--cd", str(project), "-"]
     code, stdout, stderr = invoke(command, prompt, project, args.timeout)
-    (artifacts / "stdout.jsonl").write_text(stdout)
-    (artifacts / "stderr.txt").write_text(stderr)
+    (artifacts / "stdout.jsonl").write_text(stdout, encoding="utf-8")
+    (artifacts / "stderr.txt").write_text(stderr, encoding="utf-8")
     events = [json.loads(line) for line in stdout.splitlines() if line.strip().startswith("{")]
     completed = any(e.get("type") == "turn.completed" for e in events)
     messages = [e["item"]["text"] for e in events if e.get("type") == "item.completed" and e.get("item", {}).get("type") == "agent_message"]
@@ -105,7 +105,7 @@ def main():
                                          "Existing: optimization role participation labelled honestly; no unmeasured performance gains", "Empty: missing implementation explained, no invented findings or optimizer activation",
                                          "Read-only tools/sandbox are a backstop; inspect actual events, not only hashes"],
               "limitations": "Synthetic Codex scenario only. Mechanical format/hash checks do not establish reasoning quality, independent delegation or behavior on other hosts."}
-    (artifacts / "assessment.json").write_text(json.dumps(result, indent=2))
+    (artifacts / "assessment.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result, indent=2))
     return 0 if all(checks.values()) else 2
 
